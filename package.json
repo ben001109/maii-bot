@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@prisma/client": "^6.6.0",
+        "biome": "^0.2.2",
         "discord.js": "^14.14.1",
         "dotenv": "^16.3.1",
         "ioredis": "^5.3.2",
