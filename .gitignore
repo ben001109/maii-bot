@@ -1,0 +1,9 @@
+node_modules
+# Keep environment variables out of version control
+.env
+multiplatform
+# Ignore build artifacts
+.husky
+# Ignore IDE specific files
+.vscode
+.biome.json

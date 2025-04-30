@@ -1,0 +1,24 @@
+{
+    "name": "maii-bot",
+    "version": "1.0.0",
+    "description": "Maii 宇宙企業 Discord Bot",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.js",
+        "prepare": "husky install"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.6.0",
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.3.1",
+        "ioredis": "^5.3.2",
+        "pino": "^9.6.0",
+        "pino-pretty": "^13.0.0",
+        "uuid": "^9.0.0"
+    },
+    "devDependencies": {
+        "husky": "^9.1.7",
+        "prisma": "^6.6.0"
+    }
+}
