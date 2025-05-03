@@ -7,3 +7,4 @@ multiplatform
 # Ignore IDE specific files
 .vscode
 .biome.json
+config/
