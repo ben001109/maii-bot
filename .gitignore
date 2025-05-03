@@ -8,3 +8,5 @@ multiplatform
 .vscode
 .biome.json
 config/
+src/config/config.json
+.env
