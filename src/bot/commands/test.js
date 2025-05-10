@@ -15,16 +15,16 @@ export default {
     const input = interaction.options.getInteger('數字');
     if(input>1000 || input<=0){
         await interaction.reply({
-            content: `輸入超出範圍`,
+            content: "輸入超出範圍",
             ephemeral: true
           });
         return;
     }
-    var p = [2];
+    const p = [2];
     for (let i = 3; i < input; i++) {
-        var is_prime = true;
+        let is_prime = true;
         for (let j = 0; j < p.length && p[j]*p[j]<=i; j++) {
-            if(i%p[j] == 0){
+            if(i%p[j] === 0){
                 is_prime = false;
                 break;
             }
