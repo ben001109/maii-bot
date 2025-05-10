@@ -10,3 +10,4 @@ multiplatform
 config/
 src/config/config.json
 .env
+logs/*.log

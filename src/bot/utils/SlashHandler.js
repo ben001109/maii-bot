@@ -6,8 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function loadSlashCommands(client) {
   const commandsPath = path.join(__dirname, '..', 'commands');
-  client.commands = new Map();
-
+  const commandArray = [];
   // 遍歷 commands 目錄
   const commandFiles = fs.readdirSync(commandsPath, { withFileTypes: true });
 
@@ -20,6 +19,7 @@ export async function loadSlashCommands(client) {
       if (command?.default?.data) {
         client.commands.set(command.default.data.name, command.default);
         console.log(`📄 載入根指令：${command.default.data.name}`);
+        commandArray.push(command.default.data);
       }
     } else if (entry.isDirectory()) {
       // 遍歷子目錄內的 .js 檔案
@@ -30,7 +30,7 @@ export async function loadSlashCommands(client) {
         if (command?.default?.data) {
           client.commands.set(command.default.data.name, command.default);
           console.log(`📂 載入子指令：${command.default.data.name}`);
-        }
+           }
       }
     }
   }

@@ -5,20 +5,29 @@ import { getEnterprisesByPlayer } from '../../services/enterpriseService.js';
 export default {
   data: new SlashCommandBuilder()
     .setName('profile')
-    .setDescription('查看你的帳號資訊與企業列表'),
+    .setDescription('View your account info and enterprise list'),
 
+  /**
+   * Executes the profile command.
+   * @param {import('discord.js').ChatInputCommandInteraction} interaction
+   */
   async execute(interaction) {
-    const discordId = interaction.user.id;
-    const player = await getOrCreatePlayer(discordId);
-    const enterprises = await getEnterprisesByPlayer(discordId);
+    try {
+      const discordId = interaction.user.id;
+      const player = await getOrCreatePlayer(discordId);
+      const enterprises = await getEnterprisesByPlayer(discordId);
 
-    const entList = enterprises.map((e, i) =>
-      `🏢 ${i + 1}. **${e.name}**（${e.type}）Lv.${e.level} 💰收入：${e.income}/hr`
-    ).join('\n') || '（尚未擁有企業）';
+      const entList = enterprises.map((e, i) =>
+        `🏢 ${i + 1}. **${e.name}** (${e.type}) Lv.${e.level} 💰Income: ${e.income}/hr`
+      ).join('\n') || '(No enterprises owned)';
 
-    await interaction.reply({
-      content: `👤 玩家：<@${interaction.user.id}>\n💰 資金：$${player.money}\n\n${entList}`,
-      ephemeral: true
-    });
+      await interaction.reply({
+        content: `👤 Player: <@${interaction.user.id}>\n💰 Funds: $${player.money}\n\n${entList}`,
+        ephemeral: true
+      });
+    } catch (err) {
+      logger.error(`[PROFILE] Error fetching profile for ${interaction.user.id}`, err);
+      await interaction.reply({ content: '❌ Error fetching profile', ephemeral: true });
+    }
   }
 };
