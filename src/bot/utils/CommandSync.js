@@ -56,13 +56,27 @@ export async function syncAllGuildCommands(client) {
   for (const [guildId] of guilds) {
     try {
       logger.info(`📡 正在同步指令：GUILD ${guildId}`);
-      await rest.put(
+      // ⬇️ 呼叫 API 並接收回應
+      const response = await rest.put(
         Routes.applicationGuildCommands(config.clientId, guildId),
         { body: commands }
       );
-      logger.info(`✅ 指令同步成功：GUILD ${guildId}`);
+      logger.info(
+        `✅ 指令同步成功：GUILD ${guildId}\nDiscord API 回應：\n${JSON.stringify(response, null, 2)}`
+      );
     } catch (error) {
-      logger.error(`❌ 指令同步失敗：GUILD ${guildId}`, error);
+      // 如果 Discord.js RESTError 有 response body，顯示更細的內容
+      let details = '';
+      if (error?.rawError) {
+        details = JSON.stringify(error.rawError, null, 2);
+      } else if (error?.body) {
+        details = JSON.stringify(error.body, null, 2);
+      } else {
+        details = error?.message || error;
+      }
+      logger.error(
+        `❌ 指令同步失敗：GUILD ${guildId}\n${details}`
+      );
     }
   }
 }

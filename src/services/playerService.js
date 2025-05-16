@@ -3,7 +3,7 @@ import { redis } from '../redis/redisClient.js';
 import { logger } from '../bot/utils/Logging.js';
 
 /**
- * 建立或取得玩家資料
+ * 建立或取得玩家資料，保證有 privacy 欄位
  * @param {string} discordId Discord 使用者 ID
  * @returns {Promise<Object>} 玩家資料物件
  */
@@ -11,7 +11,12 @@ export async function getOrCreatePlayer(discordId) {
   const key = getPlayerKey(discordId);
   try {
     const cached = await redis.get(key);
-    if (cached) return JSON.parse(cached);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      // 兼容舊資料，自動補上 privacy 欄位
+      if (!parsed.privacy) parsed.privacy = createDefaultPrivacy();
+      return parsed;
+    }
 
     const newPlayer = createDefaultPlayer(discordId);
     await redis.set(key, JSON.stringify(newPlayer));
@@ -24,7 +29,7 @@ export async function getOrCreatePlayer(discordId) {
 }
 
 /**
- * 取得玩家資料（不建立）
+ * 取得玩家資料（不建立），保證有 privacy 欄位
  * @param {string} discordId Discord 使用者 ID
  * @returns {Promise<Object|null>} 玩家資料或 null
  */
@@ -36,7 +41,9 @@ export async function getPlayer(discordId) {
       logger.warn(`[Redis] 找不到玩家 ${discordId}`);
       return null;
     }
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    if (!parsed.privacy) parsed.privacy = createDefaultPrivacy();
+    return parsed;
   } catch (err) {
     logger.error(`[Redis] getPlayer 錯誤 ${discordId}`, err);
     throw err;
@@ -52,6 +59,8 @@ export async function getPlayer(discordId) {
 export async function updatePlayer(discordId, playerData) {
   const key = getPlayerKey(discordId);
   try {
+    // 保證 privacy 不會被移除
+    if (!playerData.privacy) playerData.privacy = createDefaultPrivacy();
     await redis.set(key, JSON.stringify(playerData));
     logger.debug(`[Redis] 更新玩家資料 ${discordId}`);
   } catch (err) {
@@ -88,6 +97,22 @@ function createDefaultPlayer(discordId) {
     discordId,
     money: 500,
     enterprises: [],
+    privacy: createDefaultPrivacy(), // 加入預設 privacy
+  };
+}
+
+/**
+ * 預設 privacy 欄位
+ * @returns {Object}
+ */
+function createDefaultPrivacy() {
+  return {
+    replyVisibility: 'private', // private or public
+    profileVisibility: {
+      money: true,
+      enterprises: true,
+    },
+    searchable: true,
   };
 }
 

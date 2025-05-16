@@ -1,7 +1,6 @@
 // 📁 src/bot/commands/test.js
 import { SlashCommandBuilder } from 'discord.js';
 import { logger } from '../utils/Logging.js';
-import { replyWithError } from '../utils/ReplyUtils.js'; // 若有的話
 
 function getLargestPrimeBelow(n) {
   if (n <= 2) return null;

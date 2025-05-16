@@ -20,27 +20,45 @@ const client = new Client({
 // === 機器人初始化 ===
 async function handleBotReady() {
   logger.debug('🧪 Bot 初始化中');
-
   try {
     logger.info(`✅ Bot 上線囉！登入為 ${client.user.tag}`);
 
-    await loadSlashCommands(client);
+    await loadSlashCommands(client).catch(err => {
+      logger.error('loadSlashCommands 執行失敗', err);
+      throw err;
+    });
     logger.info('✅ 指令載入完成');
 
-    const pong = await redis.ping();
+    const pong = await redis.ping().catch(err => {
+      logger.error('redis.ping() 失敗', err);
+      throw err;
+    });
     logger.info(`🔗 Redis 回應：${pong}`);
 
-    await prisma.$connect();
-    await prisma.$executeRaw`SELECT 1`;
+    await prisma.$connect().catch(err => {
+      logger.error('prisma.$connect() 失敗', err);
+      throw err;
+    });
+    await prisma.$executeRaw`SELECT 1`.catch(err => {
+      logger.error('prisma.$executeRaw 失敗', err);
+      throw err;
+    });
     logger.info('🔗 PostgreSQL（Prisma）已連線');
 
     const guildIds = client.guilds.cache.map(g => g.id).join(', ');
     logger.info(`開始同步指令：Guild ${guildIds}`);
-    await syncAllGuildCommands(client);
 
+    await syncAllGuildCommands(client).catch(err => {
+      logger.error('syncAllGuildCommands 執行失敗', err);
+      throw err;
+    });
     logger.info('✅ 指令同步完成');
   } catch (err) {
-    logger.error('❌ 初始化時發生錯誤', err instanceof Error ? err.message : err);
+    if (err instanceof Error) {
+      logger.error('❌ 初始化時發生錯誤', err.stack || err);
+    } else {
+      logger.error('❌ 初始化時發生錯誤', err);
+    }
   } finally {
     logger.debug('🧪 Bot 初始化完成');
   }
