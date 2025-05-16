@@ -4,49 +4,58 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
-import { logger } from '../utils/Logging.js';
+import { logger } from './Logging.js';
 
 const require = createRequire(import.meta.url);
 const config = require('../../config/config.json');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// 收集所有指令定義
+/**
+ * 遞迴收集所有指令定義
+ * @returns {Promise<Array<Object>>}
+ */
 export async function collectCommands() {
   const commands = [];
-  const commandsPath = path.join(__dirname, '..', 'commands');
+  const commandsDir = path.join(__dirname, '..', 'commands');
 
-  const entries = fs.readdirSync(commandsPath, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(commandsPath, entry.name);
+  async function loadCommandFile(filePath) {
+    const command = await import(filePath);
+    if (command?.default?.data) {
+      commands.push(command.default.data.toJSON());
+    }
+  }
 
-    if (entry.isFile() && entry.name.endsWith('.js')) {
-      const command = await import(fullPath);
-      if (command?.default?.data) {
-        commands.push(command.default.data.toJSON());
-      }
-    } else if (entry.isDirectory()) {
-      const files = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
-      for (const file of files) {
-        const filePath = path.join(fullPath, file);
-        const command = await import(filePath);
-        if (command?.default?.data) {
-          commands.push(command.default.data.toJSON());
-        }
+  function scanDir(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        scanDir(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith('.js')) {
+        loadPromises.push(loadCommandFile(fullPath));
       }
     }
   }
 
+  const loadPromises = [];
+  scanDir(commandsDir);
+  await Promise.all(loadPromises);
+
   return commands;
 }
 
+/**
+ * 將所有指令同步到每個伺服器
+ * @param {import('discord.js').Client} client
+ */
 export async function syncAllGuildCommands(client) {
-  logger.info(`開始同步指令：GUILD ${guildId}`);
   const rest = new REST({ version: '10' }).setToken(config.discordToken);
   const commands = await collectCommands();
 
   const guilds = await client.guilds.fetch();
   for (const [guildId] of guilds) {
     try {
+      logger.info(`📡 正在同步指令：GUILD ${guildId}`);
       await rest.put(
         Routes.applicationGuildCommands(config.clientId, guildId),
         { body: commands }

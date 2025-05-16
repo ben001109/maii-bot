@@ -1,13 +1,21 @@
+// 📁 src/db/prismaClient.js
+
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis;
+const IS_DEV = process.env.NODE_ENV !== 'production';
 
-export const prisma =
-  globalForPrisma.prisma || new PrismaClient();
+// 避免在開發模式下 PrismaClient 被多次實例化
+const globalRef = globalThis;
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-// 這樣做是為了避免在開發模式下多次連接 Prisma，導致連接數過多的問題
-// 這樣的寫法在開發模式下會使用全域變數來儲存 PrismaClient 實例，
-// 這樣就不會每次都創建新的 PrismaClient 實例了
-// 這樣做的好處是可以避免在開發模式下多次連接 Prisma，
-// 導致連接數過多的問題
+let prisma;
+
+if (IS_DEV) {
+  if (!globalRef._prisma) {
+    globalRef._prisma = new PrismaClient();
+  }
+  prisma = globalRef._prisma;
+} else {
+  prisma = new PrismaClient();
+}
+
+export { prisma };

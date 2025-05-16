@@ -11,3 +11,4 @@ config/
 src/config/config.json
 .env
 logs/*.log
+/bot/logs/

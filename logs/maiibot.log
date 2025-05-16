@@ -1,49 +1,10 @@
-{"level":30,"time":1746885053651,"pid":5666,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885053652,"pid":5666,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885054861,"pid":5666,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885105491,"pid":5817,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885105492,"pid":5817,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885105494,"pid":5817,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885168501,"pid":5999,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885168503,"pid":5999,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885168504,"pid":5999,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885321286,"pid":6221,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885321288,"pid":6221,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885321289,"pid":6221,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885396572,"pid":6348,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885396574,"pid":6348,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885396575,"pid":6348,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885418822,"pid":6468,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885418824,"pid":6468,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885418825,"pid":6468,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885483777,"pid":6656,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885483780,"pid":6656,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885483781,"pid":6656,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885507301,"pid":6773,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885507303,"pid":6773,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885507304,"pid":6773,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885739847,"pid":7003,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885739849,"pid":7003,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885739850,"pid":7003,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885801687,"pid":7077,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885801689,"pid":7077,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885801691,"pid":7077,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746885909357,"pid":7293,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":30,"time":1746885909359,"pid":7293,"hostname":"Maii-bot","msg":"🔗 Redis 回應：PONG"}
-{"level":50,"time":1746885909361,"pid":7293,"hostname":"Maii-bot","msg":"❌ [execute] 內部錯誤"}
-{"level":30,"time":1746886184691,"pid":7737,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746886184696,"pid":7737,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746886227255,"pid":7878,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746886227262,"pid":7878,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746887960065,"pid":19748,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746887960069,"pid":19748,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746888607620,"pid":29155,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746888607624,"pid":29155,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746888671625,"pid":30571,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746888671629,"pid":30571,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746888759802,"pid":32271,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746888759807,"pid":32271,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746888947335,"pid":36337,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746888947340,"pid":36337,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
-{"level":30,"time":1746901784491,"pid":92849,"hostname":"Maii-bot","msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
-{"level":50,"time":1746901784538,"pid":92849,"hostname":"Maii-bot","msg":"❌ 初始化時發生錯誤"}
+{"level":30,"time":1747358794544,"msg":"✅ Bot 上線囉！登入為 麥宇宙#0539"}
+{"level":30,"time":1747358794546,"msg":"[Slash] ✅ 載入指令：enterprise-create"}
+{"level":40,"time":1747358794547,"msg":"[Slash] 無效指令模組：/root/maii-bot/src/bot/commands/admin/reset.js"}
+{"level":30,"time":1747358794553,"msg":"[Slash] ✅ 載入指令：test"}
+{"level":30,"time":1747358794554,"msg":"[Slash] ✅ 載入指令：start"}
+{"level":30,"time":1747358794567,"msg":"[Slash] ✅ 載入指令：admin-sync"}
+{"level":30,"time":1747358794579,"msg":"[Slash] ✅ 載入指令：profile"}
+{"level":30,"time":1747358794579,"msg":"✅ 指令載入完成"}
+{"level":30,"time":1747358794580,"msg":"🔗 Redis 回應：PONG"}
+{"level":50,"time":1747358794612,"msg":"❌ 初始化時發生錯誤"}

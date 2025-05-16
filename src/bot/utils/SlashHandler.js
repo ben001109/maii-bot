@@ -1,37 +1,54 @@
+// 📁 src/bot/utils/SlashHandler.js
+
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Collection } from 'discord.js';
+import { logger } from './Logging.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * 遞迴載入所有 slash 指令模組
+ * @param {import('discord.js').Client} client Discord 客戶端
+ */
 export async function loadSlashCommands(client) {
-  const commandsPath = path.join(__dirname, '..', 'commands');
-  const commandArray = [];
-  // 遍歷 commands 目錄
-  const commandFiles = fs.readdirSync(commandsPath, { withFileTypes: true });
+  const commandsDir = path.join(__dirname, '..', 'commands');
+  const commands = new Collection();
 
-  for (const entry of commandFiles) {
-    const fullPath = path.join(commandsPath, entry.name);
+  async function loadCommandFile(filePath) {
+    try {
+      const commandModule = await import(filePath);
+      const command = commandModule?.default;
 
-    if (entry.isFile() && entry.name.endsWith('.js')) {
-      // 載入根目錄下的 .js 檔案指令
-      const command = await import(fullPath);
-      if (command?.default?.data) {
-        client.commands.set(command.default.data.name, command.default);
-        console.log(`📄 載入根指令：${command.default.data.name}`);
-        commandArray.push(command.default.data);
+      if (!command?.data?.name) {
+        logger.warn(`[Slash] 無效指令模組：${filePath}`);
+        return;
       }
-    } else if (entry.isDirectory()) {
-      // 遍歷子目錄內的 .js 檔案
-      const subFiles = fs.readdirSync(fullPath).filter(f => f.endsWith('.js'));
-      for (const file of subFiles) {
-        const filePath = path.join(fullPath, file);
-        const command = await import(filePath);
-        if (command?.default?.data) {
-          client.commands.set(command.default.data.name, command.default);
-          console.log(`📂 載入子指令：${command.default.data.name}`);
-           }
+
+      commands.set(command.data.name, command);
+      logger.info(`[Slash] ✅ 載入指令：${command.data.name}`);
+    } catch (err) {
+      logger.error(`[Slash] ❌ 載入失敗：${filePath}`, err);
+    }
+  }
+
+  function scanDirRecursively(dirPath) {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        scanDirRecursively(fullPath);
+      } else if (entry.isFile() && entry.name.endsWith('.js')) {
+        loadPromises.push(loadCommandFile(fullPath));
       }
     }
   }
+
+  const loadPromises = [];
+  scanDirRecursively(commandsDir);
+  await Promise.all(loadPromises);
+
+  client.commands = commands;
 }

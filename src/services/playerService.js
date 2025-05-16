@@ -2,19 +2,18 @@
 import { redis } from '../redis/redisClient.js';
 import { logger } from '../bot/utils/Logging.js';
 
+/**
+ * 建立或取得玩家資料
+ * @param {string} discordId Discord 使用者 ID
+ * @returns {Promise<Object>} 玩家資料物件
+ */
 export async function getOrCreatePlayer(discordId) {
+  const key = getPlayerKey(discordId);
   try {
-    const key = `player:${discordId}`;
-    let data = await redis.get(key);
+    const cached = await redis.get(key);
+    if (cached) return JSON.parse(cached);
 
-    if (data) return JSON.parse(data);
-
-    const newPlayer = {
-      discordId,
-      money: 500,
-      enterprises: []
-    };
-
+    const newPlayer = createDefaultPlayer(discordId);
     await redis.set(key, JSON.stringify(newPlayer));
     logger.info(`[Redis] 新玩家建立 ${discordId}`);
     return newPlayer;
@@ -24,9 +23,14 @@ export async function getOrCreatePlayer(discordId) {
   }
 }
 
+/**
+ * 取得玩家資料（不建立）
+ * @param {string} discordId Discord 使用者 ID
+ * @returns {Promise<Object|null>} 玩家資料或 null
+ */
 export async function getPlayer(discordId) {
+  const key = getPlayerKey(discordId);
   try {
-    const key = `player:${discordId}`;
     const data = await redis.get(key);
     if (!data) {
       logger.warn(`[Redis] 找不到玩家 ${discordId}`);
@@ -39,9 +43,15 @@ export async function getPlayer(discordId) {
   }
 }
 
+/**
+ * 更新玩家資料
+ * @param {string} discordId Discord 使用者 ID
+ * @param {Object} playerData 要儲存的玩家資料
+ * @returns {Promise<void>}
+ */
 export async function updatePlayer(discordId, playerData) {
+  const key = getPlayerKey(discordId);
   try {
-    const key = `player:${discordId}`;
     await redis.set(key, JSON.stringify(playerData));
     logger.debug(`[Redis] 更新玩家資料 ${discordId}`);
   } catch (err) {
@@ -50,12 +60,42 @@ export async function updatePlayer(discordId, playerData) {
   }
 }
 
+/**
+ * 刪除玩家資料
+ * @param {string} discordId Discord 使用者 ID
+ * @returns {Promise<void>}
+ */
 export async function deletePlayer(discordId) {
+  const key = getPlayerKey(discordId);
   try {
-    await redis.del(`player:${discordId}`);
+    await redis.del(key);
     logger.warn(`[Redis] 已刪除玩家 ${discordId}`);
   } catch (err) {
     logger.error(`[Redis] deletePlayer 錯誤 ${discordId}`, err);
     throw err;
   }
+}
+
+// === 私有工具區 ===
+
+/**
+ * 預設玩家資料模板
+ * @param {string} discordId
+ * @returns {Object}
+ */
+function createDefaultPlayer(discordId) {
+  return {
+    discordId,
+    money: 500,
+    enterprises: [],
+  };
+}
+
+/**
+ * 建立 Redis key
+ * @param {string} discordId
+ * @returns {string}
+ */
+function getPlayerKey(discordId) {
+  return `player:${discordId}`;
 }
