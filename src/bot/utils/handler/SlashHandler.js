@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Collection } from 'discord.js';
-import { logger } from './Logging.js';
+import { logger } from '../Logging.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,6 +15,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export async function loadSlashCommands(client) {
   const commandsDir = path.join(__dirname, '..', 'commands');
   const commands = new Collection();
+  const errors = [];
 
   async function loadCommandFile(filePath) {
     try {
@@ -30,6 +31,7 @@ export async function loadSlashCommands(client) {
       logger.info(`[Slash] ✅ 載入指令：${command.data.name}`);
     } catch (err) {
       logger.error(`[Slash] ❌ 載入失敗：${filePath}`, err);
+      errors.push({ file: filePath, error: err });
     }
   }
 
@@ -51,4 +53,8 @@ export async function loadSlashCommands(client) {
   await Promise.all(loadPromises);
 
   client.commands = commands;
+
+  if (errors.length > 0) {
+    throw new Error(`[Slash] 有 ${errors.length} 個指令模組載入失敗，詳情請參考 logs`);
+  }
 }

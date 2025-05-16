@@ -10,9 +10,20 @@ const config = require('../config/config.json');
 const redisConfig = {
   host: config.redis.host || '127.0.0.1',
   port: config.redis.port || 6379,
+  // retryStrategy: times => Math.min(times * 50, 2000), // 可加重連策略
 };
 
-export const redis = new Redis(redisConfig);
+let redis;
+
+if (process.env.NODE_ENV === 'development') {
+  // 開發模式下防止多次實例
+  if (!global._redis) {
+    global._redis = new Redis(redisConfig);
+  }
+  redis = global._redis;
+} else {
+  redis = new Redis(redisConfig);
+}
 
 // === Redis 事件監聽 ===
 const events = {
@@ -31,7 +42,15 @@ const events = {
   punsubscribe: (pattern, count) => logger.debug(`📴 模式取消訂閱：${pattern}（剩 ${count} 個）`),
 };
 
-// 掛載所有事件
 for (const [event, handler] of Object.entries(events)) {
   redis.on(event, handler);
 }
+
+// === 健康檢查: 定期 ping，避免意外斷線沒發現（可選）
+setInterval(() => {
+  redis.ping().catch((err) => {
+    logger.error('❌ Redis Ping 失敗', err);
+  });
+}, 30_000); // 30 秒一次
+
+export { redis };

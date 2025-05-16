@@ -11,10 +11,10 @@ const VALID_KEYS = {
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('private')
-    .setDescription('設定你的隱私偏好')
+    .setName('player')
+    .setDescription('玩家指令')
     .addSubcommand(sub =>
-      sub.setName('set')
+      sub.setName('private_set')
         .setDescription('設定特定隱私選項')
         .addStringOption(opt =>
           opt.setName('key')
@@ -37,7 +37,7 @@ export default {
               { name: '否', value: 'false' }
             )))
     .addSubcommand(sub =>
-      sub.setName('show')
+      sub.setName('private_show')
         .setDescription('查看目前的隱私設定')),
 
   async execute(interaction) {
@@ -53,7 +53,7 @@ export default {
         searchable: true
       };
 
-      if (sub === 'set') {
+      if (sub === 'private_set') {
         const key = options.getString('key');
         const value = options.getString('value');
 
@@ -100,7 +100,7 @@ export default {
           return await replyWithPrivacy(interaction, player, '⚠️ 此設定已是你目前的狀態');
       }
 
-      if (sub === 'show') {
+      if (sub === 'private_show') {
         const vis = player.privacy;
         return await replyWithPrivacy(
           interaction,

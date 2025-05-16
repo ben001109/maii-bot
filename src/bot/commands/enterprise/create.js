@@ -18,36 +18,48 @@ function formatCreateMsg(enterprise) {
 
 export default {
   data: new SlashCommandBuilder()
-    .setName('enterprise-create')
-    .setDescription('創建你的第一家企業！'),
-    // .addStringOption(option =>
-    //   option.setName('type')
-    //     .setDescription('企業類型')
-    //     .setRequired(false)
-    // ) // 未來可放開支援多類型
+    .setName('enterprise')
+    .setDescription('企業相關指令')
+    .addSubcommand(sub =>
+      sub.setName('create')
+        .setDescription('創建你的第一家企業！')
+        .addStringOption(option =>
+          option.setName('type')
+            .setDescription('企業類型')
+            .setRequired(true)
+            .addChoices(
+              { name: '農場', value: 'farm' },
+              { name: '食品工廠', value: 'factory' },
+              { name: '物流公司', value: 'logistics' },
+              { name: '設備製造', value: 'equipment' }
+            )
+        )
+    ),
 
   /**
-   * Executes the enterprise-create command.
+   * Executes the enterprise command.
    * @param {import('discord.js').ChatInputCommandInteraction} interaction
    */
   async execute(interaction) {
+    const sub = interaction.options.getSubcommand();
     const discordId = interaction.user.id;
-    // const type = interaction.options.getString('type') || 'restaurant'; // 未來參數
-
-    try {
-      const enterprise = await createEnterprise(discordId, 'restaurant');
-      await interaction.reply({
-        content: formatCreateMsg(enterprise),
-        ephemeral: true
-      });
-      logger.info(`[ENTERPRISE-CREATE] ${discordId} 創建企業 ${enterprise.id}`);
-    } catch (error) {
-      logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗:`, error);
-      const msg = { content: '❌ 創建企業時發生錯誤，請稍後再試。', ephemeral: true };
-      if (interaction.deferred || interaction.replied) {
-        await interaction.followUp(msg);
-      } else {
-        await interaction.reply(msg);
+    if (sub === 'create') {
+      const type = interaction.options.getString('type');
+      try {
+        const enterprise = await createEnterprise(discordId, type);
+        await interaction.reply({
+          content: formatCreateMsg(enterprise),
+          ephemeral: true
+        });
+        logger.info(`[ENTERPRISE-CREATE] ${discordId} 創建企業 ${enterprise.id}`);
+      } catch (error) {
+        logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗:`, error);
+        const msg = { content: '❌ 創建企業時發生錯誤，請稍後再試。', ephemeral: true };
+        if (interaction.deferred || interaction.replied) {
+          await interaction.followUp(msg);
+        } else {
+          await interaction.reply(msg);
+        }
       }
     }
   }

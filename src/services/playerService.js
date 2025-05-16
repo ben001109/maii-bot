@@ -3,7 +3,7 @@ import { redis } from '../redis/redisClient.js';
 import { logger } from '../bot/utils/Logging.js';
 
 /**
- * 建立或取得玩家資料，保證有 privacy 欄位
+ * 建立或取得玩家資料，保證有完整 privacy 欄位
  * @param {string} discordId Discord 使用者 ID
  * @returns {Promise<Object>} 玩家資料物件
  */
@@ -12,12 +12,9 @@ export async function getOrCreatePlayer(discordId) {
   try {
     const cached = await redis.get(key);
     if (cached) {
-      const parsed = JSON.parse(cached);
-      // 兼容舊資料，自動補上 privacy 欄位
-      if (!parsed.privacy) parsed.privacy = createDefaultPrivacy();
+      const parsed = ensurePlayerSchema(JSON.parse(cached));
       return parsed;
     }
-
     const newPlayer = createDefaultPlayer(discordId);
     await redis.set(key, JSON.stringify(newPlayer));
     logger.info(`[Redis] 新玩家建立 ${discordId}`);
@@ -29,7 +26,7 @@ export async function getOrCreatePlayer(discordId) {
 }
 
 /**
- * 取得玩家資料（不建立），保證有 privacy 欄位
+ * 取得玩家資料（不建立），保證有完整 privacy 欄位
  * @param {string} discordId Discord 使用者 ID
  * @returns {Promise<Object|null>} 玩家資料或 null
  */
@@ -41,8 +38,7 @@ export async function getPlayer(discordId) {
       logger.warn(`[Redis] 找不到玩家 ${discordId}`);
       return null;
     }
-    const parsed = JSON.parse(data);
-    if (!parsed.privacy) parsed.privacy = createDefaultPrivacy();
+    const parsed = ensurePlayerSchema(JSON.parse(data));
     return parsed;
   } catch (err) {
     logger.error(`[Redis] getPlayer 錯誤 ${discordId}`, err);
@@ -59,9 +55,8 @@ export async function getPlayer(discordId) {
 export async function updatePlayer(discordId, playerData) {
   const key = getPlayerKey(discordId);
   try {
-    // 保證 privacy 不會被移除
-    if (!playerData.privacy) playerData.privacy = createDefaultPrivacy();
-    await redis.set(key, JSON.stringify(playerData));
+    const data = ensurePlayerSchema(playerData);
+    await redis.set(key, JSON.stringify(data));
     logger.debug(`[Redis] 更新玩家資料 ${discordId}`);
   } catch (err) {
     logger.error(`[Redis] updatePlayer 錯誤 ${discordId}`, err);
@@ -97,7 +92,7 @@ function createDefaultPlayer(discordId) {
     discordId,
     money: 500,
     enterprises: [],
-    privacy: createDefaultPrivacy(), // 加入預設 privacy
+    privacy: createDefaultPrivacy(), // 預設隱私欄位
   };
 }
 
@@ -107,7 +102,7 @@ function createDefaultPlayer(discordId) {
  */
 function createDefaultPrivacy() {
   return {
-    replyVisibility: 'private', // private or public
+    replyVisibility: 'private', // 'private' or 'public'
     profileVisibility: {
       money: true,
       enterprises: true,
@@ -123,4 +118,39 @@ function createDefaultPrivacy() {
  */
 function getPlayerKey(discordId) {
   return `player:${discordId}`;
+}
+
+/**
+ * 保證玩家資料物件 schema 完整（補齊缺漏欄位）
+ * @param {Object} player 玩家物件
+ * @returns {Object}
+ */
+function ensurePlayerSchema(player) {
+  if (!player.privacy) player.privacy = createDefaultPrivacy();
+  // 處理 profileVisibility 缺漏
+  if (!player.privacy.profileVisibility) {
+    player.privacy.profileVisibility = { money: true, enterprises: true };
+  } else {
+    if (typeof player.privacy.profileVisibility.money !== 'boolean')
+      player.privacy.profileVisibility.money = true;
+    if (typeof player.privacy.profileVisibility.enterprises !== 'boolean')
+      player.privacy.profileVisibility.enterprises = true;
+  }
+  // replyVisibility 與 searchable 預設值
+  if (!['private', 'public'].includes(player.privacy.replyVisibility))
+    player.privacy.replyVisibility = 'private';
+  if (typeof player.privacy.searchable !== 'boolean')
+    player.privacy.searchable = true;
+
+  return player;
+}
+export function fillDefaultPrivacy(privacy) {
+  return {
+    replyVisibility: privacy?.replyVisibility ?? 'private',
+    searchable: !(privacy?.searchable === false), // 預設 true
+    profileVisibility: {
+      money: !(privacy?.profileVisibility?.money === false),
+      enterprises: !(privacy?.profileVisibility?.enterprises === false)
+    }
+  };
 }
