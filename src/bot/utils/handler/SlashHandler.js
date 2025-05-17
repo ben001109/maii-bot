@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * @param {import('discord.js').Client} client Discord 客戶端
  */
 export async function loadSlashCommands(client) {
-  const commandsDir = path.join(__dirname, '..', 'commands');
+  const commandsDir = path.resolve(process.cwd(), 'src', 'bot', 'commands');
   const commands = new Collection();
   const errors = [];
 
@@ -31,6 +31,7 @@ export async function loadSlashCommands(client) {
       logger.info(`[Slash] ✅ 載入指令：${command.data.name}`);
     } catch (err) {
       logger.error(`[Slash] ❌ 載入失敗：${filePath}`, err);
+      console.error(`[Slash] ❌ 載入失敗：${filePath}`, err);
       errors.push({ file: filePath, error: err });
     }
   }

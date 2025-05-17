@@ -76,13 +76,18 @@ export default {
         ].join('\n')
       });
     } catch (err) {
-      logger.error(`[ADMIN-SYNC] 同步失敗：${userId}`, err);
-      const errorText = process.env.NODE_ENV === 'development'
-        ? (err instanceof Error ? (err.stack || err.message) : String(err))
-        : '';
-      await interaction.editReply({
-        content: `❌ 同步失敗，請稍後再試。\n${errorText}`
-      });
+      logger.error(`[ADMIN-SYNC] 同步失敗：${userId}\n${err?.stack ? err.stack : err}`);
+      let errorText = '';
+      if (process.env.NODE_ENV === 'development') {
+        errorText = (err instanceof Error ? (err.stack || err.message) : String(err));
+      }
+      try {
+        await interaction.editReply({
+          content: `❌ 同步失敗，請稍後再試。\n${errorText}`
+        });
+      } catch (editError) {
+        logger.error(`[ADMIN-SYNC] 回覆失敗：${editError?.stack ? editError.stack : editError}`);
+      }
     }
   }
 };

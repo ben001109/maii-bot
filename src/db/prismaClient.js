@@ -26,3 +26,17 @@ prisma.$on('error', (e) => {
 });
 
 export { prisma };  
+
+// Transection warpper
+export const transaction = async (callback) => {
+  const transaction = await prisma.$transaction(async (prisma) => {
+    try {
+      const result = await callback(prisma);
+      return result;
+    } catch (error) {
+      logger.error('[Prisma] 交易錯誤：', error);
+      throw error;
+    }
+  });
+  return transaction;
+};

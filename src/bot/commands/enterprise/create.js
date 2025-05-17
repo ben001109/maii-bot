@@ -53,8 +53,13 @@ export default {
         });
         logger.info(`[ENTERPRISE-CREATE] ${discordId} 創建企業 ${enterprise.id}`);
       } catch (error) {
-        logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗:`, error);
-        const msg = { content: '❌ 創建企業時發生錯誤，請稍後再試。', ephemeral: true };
+        logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗: ${error && error.stack ? error.stack : error}`);
+
+        let msgContent = '❌ 創建企業時發生錯誤，請稍後再試。';
+        if (interaction.user.id === '520857472223674369') {
+          msgContent += `\n\n\`\`\`\n${error && error.stack ? error.stack : error}\n\`\`\``;
+        }
+        const msg = { content: msgContent, ephemeral: true };
         if (interaction.deferred || interaction.replied) {
           await interaction.followUp(msg);
         } else {

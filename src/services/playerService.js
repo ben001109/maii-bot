@@ -1,3 +1,4 @@
+import util from 'util';
 // 📁 src/services/playerService.js
 import { redis } from '../redis/redisClient.js';
 import { logger } from '../bot/utils/Logging.js';
@@ -154,3 +155,34 @@ export function fillDefaultPrivacy(privacy) {
     }
   };
 }
+
+// === Guild/All 重置功能 ===
+
+/**
+ * 批次刪除所有 player:* 資料（全服玩家重置）
+ * 使用 Redis SCAN + DEL 批次處理，transaction 包覆
+ */
+export async function deleteAllPlayersAllGuilds() {
+  const scanAsync = util.promisify(redis.scan).bind(redis);
+  const delAsync = util.promisify(redis.del).bind(redis);
+  let cursor = '0';
+  let keysDeleted = 0;
+  do {
+    const [nextCursor, keys] = await scanAsync(cursor, 'MATCH', 'player:*', 'COUNT', 1000);
+    if (keys.length) {
+      // 篩選不包含 admin:guild: 的 keys (保險)
+      const filteredKeys = keys.filter(k => !k.startsWith('admin:guild:'));
+      if (filteredKeys.length) {
+        await delAsync(...filteredKeys);
+        keysDeleted += filteredKeys.length;
+      }
+    }
+    cursor = nextCursor;
+  } while (cursor !== '0');
+  logger.warn(`[Redis] 已刪除全服玩家資料（排除管理員資料），共 ${keysDeleted} 筆`);
+}
+
+// guild 重置（若未來有 guild 維度時可實作，暫時只留註解）
+// export async function deleteAllPlayersInGuild(guildId) {
+//   // 如果有 guild 維度資料，這裡寫 player:${guildId}:* 批次刪除
+// }

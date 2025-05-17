@@ -1,3 +1,4 @@
+import cron from 'node-cron';
 import { redis } from '../redis/redisClient.js';
 import { prisma } from './prismaClient.js';
 import { logger } from '../bot/utils/Logging.js';
@@ -100,4 +101,22 @@ export async function syncRedisToPostgres({ dryRun = false, id = null } = {}) {
 
   logger.info(`✅ 同步${dryRun ? '模擬' : ''}完成：處理 ${playerCount} 位玩家、${enterpriseCount} 間企業`);
   return { playerCount, enterpriseCount };
+}
+
+
+/**
+ * 啟動自動同步排程
+ * @param {string} cronExpr - CRON 表達式，預設每天凌晨 3 點
+ */
+export function setupAutoSync(cronExpr = '0 3 * * *') {
+  logger.info('[Schedule] ⏰ 自動同步排程已啟動');
+  cron.schedule(cronExpr, async () => {
+    logger.info('[Schedule] ⏰ 觸發自動同步...');
+    try {
+      await syncRedisToPostgres();
+      logger.info('[Schedule] ✅ 自動同步完成');
+    } catch (err) {
+      logger.error('[Schedule] ❌ 自動同步失敗', err);
+    }
+  });
 }

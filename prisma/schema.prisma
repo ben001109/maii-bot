@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  discordId String   @unique
+  money     Int      @default(500)
+  privacy   Json?
+  enterprises String[] @default([])
+}
+
+model Enterprise {
+  id        String   @id @default(uuid())
+  owner     String
+  name      String
+  type      String
+  level     Int      @default(1)
+  income    Int      @default(100)
+  createdAt DateTime @default(now())
+}
