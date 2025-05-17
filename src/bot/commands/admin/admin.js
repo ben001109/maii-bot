@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from 'discord.js';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const config = require('../../../config/config.json');
-import { redis } from '../../../redis/redisClient.js';
+import { addGuildAdmin, removeGuildAdmin, listGuildAdmins } from '../../utils/adminControl.js';
 import { logger } from '../../utils/Logging.js';
 
 export default {
@@ -39,31 +39,35 @@ export default {
         return interaction.reply({ content: '🚫 僅限系統管理員操作。', ephemeral: true });
       }
 
-      const key = `admin:guild:${guildId}`;
       if (sub === 'add') {
-        const now = Math.floor(Date.now() / 1000);
-        await redis.zadd(key, now, targetUser.id);
+        const adminIds = await listGuildAdmins(guildId);
+        if (adminIds.includes(targetUser.id)) {
+          return interaction.reply({ content: `⚠️ ${targetUser.tag} 已經是此伺服器管理員`, ephemeral: true });
+        }
+        await addGuildAdmin(guildId, targetUser.id);
         return interaction.reply({ content: `✅ 已新增 ${targetUser.tag} 為此伺服器管理員`, ephemeral: true });
       }
       if (sub === 'remove') {
-        await redis.zrem(key, targetUser.id);
+        const adminIds = await listGuildAdmins(guildId);
+        if (!adminIds.includes(targetUser.id)) {
+          return interaction.reply({ content: `⚠️ ${targetUser.tag} 並不是此伺服器管理員`, ephemeral: true });
+        }
+        await removeGuildAdmin(guildId, targetUser.id);
         return interaction.reply({ content: `✅ 已移除 ${targetUser.tag} 的管理員權限`, ephemeral: true });
       }
       // list subcommand (default/fallback)
       if (sub === 'list' || sub == null) {
         // 取得管理員 ID 清單
-        const members = await redis.zrange(key, 0, -1, 'WITHSCORES');
-        if (!members || members.length === 0) {
+        const adminIds = await listGuildAdmins(guildId);
+        if (!adminIds || adminIds.length === 0) {
           return interaction.reply({ content: '👮 此伺服器尚未設定管理員。', ephemeral: true });
         }
-        const pairs = [];
-        for (let i = 0; i < members.length; i += 2) {
-          const id = members[i];
-          const timestamp = new Date(Number(members[i + 1]) * 1000).toLocaleString();
+        const tags = [];
+        for (const id of adminIds) {
           const user = await interaction.client.users.fetch(id).catch(() => null);
-          pairs.push(user ? `${user.tag}（${timestamp}）` : `❓ 不明使用者（${timestamp}）`);
+          tags.push(user ? `${user.tag}` : "❓ 不明使用者");
         }
-        return interaction.reply({ content: `👮 本伺服器管理員清單：\n${pairs.join('\n')}`, ephemeral: true });
+        return interaction.reply({ content: `👮 本伺服器管理員清單：\n${tags.join('\n')}`, ephemeral: true });
       }
     } catch (err) {
       logger.error(

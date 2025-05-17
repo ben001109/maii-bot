@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { createEnterprise } from '../../../services/enterpriseService.js';
 import { logger } from '../../utils/Logging.js';
+import { getOrCreatePlayer } from '../../../services/playerService.js';
+import { replyWithPrivacy } from '../../utils/replyWithPrivacy.js';
 
 /**
  * 格式化創建結果訊息
@@ -44,27 +46,20 @@ export default {
     const sub = interaction.options.getSubcommand();
     const discordId = interaction.user.id;
     if (sub === 'create') {
+      const player = await getOrCreatePlayer(discordId);
       const type = interaction.options.getString('type');
       try {
         const enterprise = await createEnterprise(discordId, type);
-        await interaction.reply({
-          content: formatCreateMsg(enterprise),
-          ephemeral: true
-        });
+        await replyWithPrivacy(interaction, player, formatCreateMsg(enterprise));
         logger.info(`[ENTERPRISE-CREATE] ${discordId} 創建企業 ${enterprise.id}`);
       } catch (error) {
-        logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗: ${error && error.stack ? error.stack : error}`);
+        logger.error(`[ENTERPRISE-CREATE] ${discordId} 創建企業失敗: ${error?.stack ? error.stack : error}`);
 
         let msgContent = '❌ 創建企業時發生錯誤，請稍後再試。';
         if (interaction.user.id === '520857472223674369') {
-          msgContent += `\n\n\`\`\`\n${error && error.stack ? error.stack : error}\n\`\`\``;
+          msgContent += `\n\n\`\`\`\n${error?.stack ? error.stack : error}\n\`\`\``;
         }
-        const msg = { content: msgContent, ephemeral: true };
-        if (interaction.deferred || interaction.replied) {
-          await interaction.followUp(msg);
-        } else {
-          await interaction.reply(msg);
-        }
+        await replyWithPrivacy(interaction, player, msgContent);
       }
     }
   }

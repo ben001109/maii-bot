@@ -4,20 +4,14 @@ import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { deletePlayer, deleteAllPlayersAllGuilds } from '../../../services/playerService.js';
 import { logger } from '../../utils/Logging.js';
 import { redis } from '../../../redis/redisClient.js'; // 請確認路徑正確
+import { isAdmin } from '../../utils/adminControl.js';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const config = require('../../../config/config.json');
 
 // ====== 直接硬編碼超級管理員 ======
 const SUPER_ADMINS = ['520857472223674369']; // 請填自己的 Discord ID
 // ==================================================
-
-// Redis 版：判斷是否為超級管理員或本 guild 指定管理員
-// 使用 async 以配合 redis 非同步查詢
-async function isSuperOrGuildAdmin(userId, guildId) {
-  if (SUPER_ADMINS.includes(userId)) return true;
-  if (!guildId) return false;
-  const key = `admin:guild:${guildId}`;
-  const isAdmin = await redis.zscore(key, userId);
-  return isAdmin !== null;
-}
 
 export default {
   data: new SlashCommandBuilder()
@@ -90,7 +84,7 @@ export default {
 
       // reset all（超級/指定管理員）
       if (subcommand === 'all') {
-        if (!(await isSuperOrGuildAdmin(adminId, guildId))) {
+        if (!(SUPER_ADMINS.includes(adminId) || await isAdmin(guildId, adminId, config))) {
           return interaction.reply({
             content: '❌ 你不是超級管理員或本伺服器指定管理員，不能進行全服重置！',
             ephemeral: true

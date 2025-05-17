@@ -29,3 +29,14 @@
 - 在開發過程中，針對多次 Patch 流程進行優化，提升協作效率。
 - 文件持續補充，包含 API 說明、資料結構與協作流程。
 - 討論與決策過程均有記錄於協作平台，方便未來查閱。
+
+### 本日 Patch 紀錄
+- 管理員權限管理全面抽象化，整合 set/zset 型態自動修正，統一使用 adminControl 工具進行權限判斷與操作，徹底解決 Redis 型態錯誤（WRONGTYPE）。
+- 所有 Discord bot reply 均根據玩家個人隱私設定（replyVisibility）動態決定 ephemeral 是否公開，並集中封裝 privacyHelper 判斷邏輯。
+- 新增 `/player start` 子指令，玩家可主動初始化帳號，並依照現有資料自動提示是否已建立過帳號。
+- player.js、admin.js 等指令全面改用高層工具方法呼叫，減少重複、提升安全性與維護效率。
+- 修正管理員重複加入/移除時的提示，操作回饋更直觀。
+- 調整 replyWithPrivacy、player profile 查詢等功能，所有隱私與公開狀態顯示完全同步玩家個人設定。
+- 移除單獨的 privacyHelper 工具，將 `getEphemeralForPlayer` 直接內嵌於 `replyWithPrivacy.js`，所有訊息隱私自動判斷集中於一處，提升維護一致性。
+- enterprise、test 指令等所有玩家互動回覆，皆改為取得玩家資料後統一呼叫 `replyWithPrivacy`，由系統自動依據玩家隱私決定公開或私密。
+- 強化所有指令回覆體驗，從個人隱私設定到 ephemeral 回覆行為，皆全面同步並自動化，不需手動判斷。

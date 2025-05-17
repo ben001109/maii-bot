@@ -3,6 +3,7 @@ import { getOrCreatePlayer, getPlayer, updatePlayer } from '../../services/playe
 import { getEnterprisesByPlayer } from '../../services/enterpriseService.js';
 import { logger } from '../utils/Logging.js';
 import { replyWithPrivacy } from '../utils/replyWithPrivacy.js';
+import { getEphemeralForPlayer } from '../utils/replyWithPrivacy.js';
 
 const VALID_KEYS = {
   replyVisibility: ['private', 'public'],
@@ -87,7 +88,8 @@ export default {
     .addSubcommand(sub =>
       sub.setName('privacy_show')
         .setDescription('查看目前的隱私設定')
-    ),
+    )
+    .addSubcommand(sub => sub.setName('start').setDescription('初始化帳號')),
 
   async execute(interaction) {
     try {
@@ -123,7 +125,7 @@ export default {
         const enterprises = await getEnterprisesByPlayer(targetId);
         const profileMsg = formatPlayerProfile(targetUser, player, enterprises, privacy, false);
 
-        const ephemeral = privacy.replyVisibility === 'private';
+        const ephemeral = getEphemeralForPlayer(player);
         await interaction.reply({ content: profileMsg, ephemeral });
 
       // 設定隱私
@@ -194,6 +196,14 @@ export default {
             `🔐 你的隱私設定：\n• 回覆顯示：${vis.replyVisibility}\n• 可被搜尋：${vis.searchable ? '✅ 是' : '❌ 否'}\n• 個人資料可見：\n　• 金錢：${vis.profileVisibility.money ? '✅' : '❌'}\n　• 企業：${vis.profileVisibility.enterprises ? '✅' : '❌'}`,
           ephemeral: true
         });
+
+      } else if (sub === 'start') {
+        const player = await getOrCreatePlayer(discordId);
+        // 判斷是否新帳號，可依你的初始預設值調整
+        if (player.money !== 500) {
+          return await replyWithPrivacy(interaction, player, '⚠️ 你已經初始化過帳號囉！');
+        }
+        await replyWithPrivacy(interaction, player, '✅ 玩家初始化完成！歡迎加入遊戲！');
       }
     } catch (err) {
       // 強化 log: 也記錄 stack trace

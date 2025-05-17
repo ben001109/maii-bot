@@ -3,18 +3,10 @@ import { syncRedisToPostgres } from '../../../db/syncService.js';
 import { logger } from '../../utils/Logging.js';
 import { createRequire } from 'node:module';
 import { redis } from '../../../redis/redisClient.js';
+import { isAdmin } from '../../utils/adminControl.js';
 
 const require = createRequire(import.meta.url);
 const config = require('../../../config/config.json');
-
-async function isAdmin(guildId, userId) {
-  const key = `admin:guild:${guildId}`;
-  const admins = await redis.smembers(key);
-  if (admins?.includes(userId)) return true;
-
-  // fallback to static adminIds for safety
-  return (config.adminIds || []).includes(userId);
-}
 
 export default {
   data: new SlashCommandBuilder()
@@ -34,7 +26,7 @@ export default {
   async execute(interaction) {
     const userId = interaction.user.id;
     const guildId = interaction.guildId;
-    if (!(await isAdmin(guildId, userId))) {
+    if (!(await isAdmin(guildId, userId, config))) {
       logger.warn(`[ADMIN-SYNC] 未授權使用者嘗試執行同步：${userId}`);
       return interaction.reply({
         content: '🚫 你沒有權限使用這個指令。',
