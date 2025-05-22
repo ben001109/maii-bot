@@ -1,3 +1,5 @@
+import { getEphemeralForPlayer } from './replyWithPrivacy.js';
+
 // i18n 支援: 格式化訊息內容，可對接 i18n 套件
 export function formatMessage(message) {
   // 若是字串則直接傳回；若是 key 則可替換成 i18n 函式如 i18n.t(key)
@@ -6,7 +8,9 @@ export function formatMessage(message) {
 }
 
 import { EmbedBuilder } from 'discord.js';
-
+// 這裡的 EmbedBuilder 是從 discord.js 套件中引入的
+// EmbedBuilder 是用來建立 Discord 的嵌入式訊息
+// 這裡的 EmbedBuilder 是用來建立 Discord 的嵌入式訊息
 export async function sendSuccess(interaction, message, ephemeral = true) {
   const embed = new EmbedBuilder()
     .setDescription(`✅ ${formatMessage(message)}`)
@@ -14,7 +18,7 @@ export async function sendSuccess(interaction, message, ephemeral = true) {
 
   return interaction.reply({
     embeds: [embed],
-    ephemeral,
+    ephemeral: getEphemeralForPlayer(interaction.user, ephemeral),
   });
 }
 
@@ -29,7 +33,7 @@ export async function sendWarning(interaction, message, ephemeral = true) {
 
   return interaction.reply({
     embeds: [embed],
-    ephemeral,
+    ephemeral: getEphemeralForPlayer(interaction.user, ephemeral),
   });
 }
 
@@ -40,6 +44,6 @@ export async function sendError(interaction, message, ephemeral = true) {
 
   return interaction.reply({
     embeds: [embed],
-    ephemeral,
+    ephemeral: getEphemeralForPlayer(interaction.user, ephemeral),
   });
 }

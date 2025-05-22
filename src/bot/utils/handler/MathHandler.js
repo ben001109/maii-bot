@@ -53,3 +53,9 @@ export function calculatePresentValue(futureValue, rate, periods) {
 export function calculateFutureValue(principal, rate, periods) {
   return principal * (1 + rate) ** periods;
 }
+
+// 企業升級所需金額
+export function calculateUpgradeCost(currentLevel) {
+  // 假設升級成本為當前等級的平方乘以1000
+  return (currentLevel ** 2) * 1000;
+}

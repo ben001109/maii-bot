@@ -76,7 +76,7 @@
 <summary><strong>資料庫與核心服務</strong></summary>
 
 ### prismaClient.js
-- [ ] Transaction Wrapper 工具
+- [x] Transaction Wrapper 工具
 
 ### redisClient.js
 - [ ] 連線自動重試與警告通知
