@@ -36,38 +36,80 @@ export default {
 
       const isSuperAdmin = (config.adminIds || []).includes(userId);
       if (!isSuperAdmin) {
-        return interaction.reply({ content: '🚫 僅限系統管理員操作。', ephemeral: true });
+        return interaction.reply({
+          embeds: [{
+            description: '🚫 僅限系統管理員操作。',
+            color: 0xFF0000
+          }],
+          ephemeral: true
+        });
       }
 
       if (sub === 'add') {
         const adminIds = await listGuildAdmins(guildId);
         if (adminIds.includes(targetUser.id)) {
-          return interaction.reply({ content: `⚠️ ${targetUser.tag} 已經是此伺服器管理員`, ephemeral: true });
+          return interaction.reply({
+            embeds: [{
+              description: `⚠️ ${targetUser.tag} 已經是此伺服器管理員`,
+              color: 0xFFFF00
+            }],
+            ephemeral: true
+          });
         }
         await addGuildAdmin(guildId, targetUser.id);
-        return interaction.reply({ content: `✅ 已新增 ${targetUser.tag} 為此伺服器管理員`, ephemeral: true });
+        return interaction.reply({
+          embeds: [{
+            description: `✅ 已新增 ${targetUser.tag} 為此伺服器管理員`,
+            color: 0x00FF00
+          }],
+          ephemeral: true
+        });
       }
       if (sub === 'remove') {
         const adminIds = await listGuildAdmins(guildId);
         if (!adminIds.includes(targetUser.id)) {
-          return interaction.reply({ content: `⚠️ ${targetUser.tag} 並不是此伺服器管理員`, ephemeral: true });
+          return interaction.reply({
+            embeds: [{
+              description: `⚠️ ${targetUser.tag} 並不是此伺服器管理員`,
+              color: 0xFFFF00
+            }],
+            ephemeral: true
+          });
         }
         await removeGuildAdmin(guildId, targetUser.id);
-        return interaction.reply({ content: `✅ 已移除 ${targetUser.tag} 的管理員權限`, ephemeral: true });
+        return interaction.reply({
+          embeds: [{
+            description: `✅ 已移除 ${targetUser.tag} 的管理員權限`,
+            color: 0x00FF00
+          }],
+          ephemeral: true
+        });
       }
       // list subcommand (default/fallback)
       if (sub === 'list' || sub == null) {
         // 取得管理員 ID 清單
         const adminIds = await listGuildAdmins(guildId);
         if (!adminIds || adminIds.length === 0) {
-          return interaction.reply({ content: '👮 此伺服器尚未設定管理員。', ephemeral: true });
+          return interaction.reply({
+            embeds: [{
+              description: '👮 此伺服器尚未設定管理員。',
+              color: 0x0099FF
+            }],
+            ephemeral: true
+          });
         }
         const tags = [];
         for (const id of adminIds) {
           const user = await interaction.client.users.fetch(id).catch(() => null);
           tags.push(user ? `${user.tag}` : "❓ 不明使用者");
         }
-        return interaction.reply({ content: `👮 本伺服器管理員清單：\n${tags.join('\n')}`, ephemeral: true });
+        return interaction.reply({
+          embeds: [{
+            description: `👮 本伺服器管理員清單：\n${tags.join('\n')}`,
+            color: 0x0099FF
+          }],
+          ephemeral: true
+        });
       }
     } catch (err) {
       logger.error(
@@ -75,10 +117,17 @@ export default {
         err && (typeof err === "object" ? (err.stack || JSON.stringify(err, null, 2)) : err) || "Unknown Error"
       );
       try {
+        const errorEmbed = {
+          embeds: [{
+            description: '❌ 執行指令 admin 時發生錯誤',
+            color: 0xFF0000
+          }],
+          ephemeral: true
+        };
         if (interaction.deferred || interaction.replied) {
-          await interaction.followUp({ content: '❌ 執行指令 admin 時發生錯誤', ephemeral: true });
+          await interaction.followUp(errorEmbed);
         } else {
-          await interaction.reply({ content: '❌ 執行指令 admin 時發生錯誤', ephemeral: true });
+          await interaction.reply(errorEmbed);
         }
       } catch (followErr) {
         logger.error(

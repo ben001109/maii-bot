@@ -6,17 +6,22 @@ import { logger } from '../bot/utils/Logging.js';
 /**
  * 建立或取得玩家資料，保證有完整 privacy 欄位
  * @param {string} discordId Discord 使用者 ID
+ * @param {string} guildId Discord 伺服器 ID
  * @returns {Promise<Object>} 玩家資料物件
  */
-export async function getOrCreatePlayer(discordId) {
+export async function getOrCreatePlayer(discordId, guildId) {
   const key = getPlayerKey(discordId);
   try {
     const cached = await redis.get(key);
     if (cached) {
       const parsed = ensurePlayerSchema(JSON.parse(cached));
+      if (!parsed.guildIds.includes(guildId)) {
+        parsed.guildIds.push(guildId);
+        await redis.set(key, JSON.stringify(parsed));
+      }
       return parsed;
     }
-    const newPlayer = createDefaultPlayer(discordId);
+    const newPlayer = createDefaultPlayer(discordId, guildId);
     await redis.set(key, JSON.stringify(newPlayer));
     logger.info(`[Redis] 新玩家建立 ${discordId}`);
     return newPlayer;
@@ -86,11 +91,13 @@ export async function deletePlayer(discordId) {
 /**
  * 預設玩家資料模板
  * @param {string} discordId
+ * @param {string} guildId
  * @returns {Object}
  */
-function createDefaultPlayer(discordId) {
+function createDefaultPlayer(discordId, guildId) {
   return {
     discordId,
+    guildIds: [guildId],
     money: 500,
     enterprises: [],
     privacy: createDefaultPrivacy(), // 預設隱私欄位
@@ -186,3 +193,33 @@ export async function deleteAllPlayersAllGuilds() {
 // export async function deleteAllPlayersInGuild(guildId) {
 //   // 如果有 guild 維度資料，這裡寫 player:${guildId}:* 批次刪除
 // }
+
+export async function deletePlayersByGuild(guildId) {
+  const scanAsync = util.promisify(redis.scan).bind(redis);
+  const delAsync = util.promisify(redis.del).bind(redis);
+  const getAsync = util.promisify(redis.get).bind(redis);
+  let cursor = '0';
+  let keysDeleted = 0;
+
+  do {
+    const [nextCursor, keys] = await scanAsync(cursor, 'MATCH', 'player:*', 'COUNT', 1000);
+    if (keys.length) {
+      for (const key of keys) {
+        const data = await getAsync(key);
+        if (!data) continue;
+        try {
+          const parsed = JSON.parse(data);
+          if (Array.isArray(parsed.guildIds) && parsed.guildIds.includes(guildId)) {
+            await delAsync(key);
+            keysDeleted++;
+          }
+        } catch (e) {
+          logger.warn(`[Redis] 無法解析 ${key}，略過`);
+        }
+      }
+    }
+    cursor = nextCursor;
+  } while (cursor !== '0');
+
+  logger.warn(`[Redis] 已刪除伺服器 ${guildId} 的玩家資料，共 ${keysDeleted} 筆`);
+}

@@ -1,7 +1,7 @@
 // 📁 src/bot/commands/admin/reset.js
 
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
-import { deletePlayer, deleteAllPlayersAllGuilds } from '../../../services/playerService.js';
+import { deletePlayer, deleteAllPlayersAllGuilds, deletePlayersByGuild } from '../../../services/playerService.js';
 import { logger } from '../../utils/Logging.js';
 import { redis } from '../../../redis/redisClient.js'; // 請確認路徑正確
 import { isAdmin } from '../../utils/adminControl.js';
@@ -51,7 +51,10 @@ export default {
     // 官方權限檢查
     if (!interaction.memberPermissions.has(PermissionFlagsBits.Administrator)) {
       return interaction.reply({
-        content: '❌ 僅限管理員操作',
+        embeds: [{
+          description: '❌ 僅限管理員操作',
+          color: 0xFF0000
+        }],
         ephemeral: true
       });
     }
@@ -62,22 +65,33 @@ export default {
         const target = interaction.options.getUser('user');
         if (!target) {
           return interaction.reply({
-            content: '❌ 請提供要重置的目標用戶。',
+            embeds: [{
+              description: '❌ 請提供要重置的目標用戶。',
+              color: 0xFF0000
+            }],
             ephemeral: true
           });
         }
         await deletePlayer(target.id);
         logger.warn(`[RESET][USER] ${adminId} 重置了 ${target.id} 的玩家資料`);
         return interaction.reply({
-          content: `✅ 已成功重置 <@${target.id}> 的帳號資料！`,
+          embeds: [{
+            description: `✅ 已成功重置 <@${target.id}> 的帳號資料！`,
+            color: 0x00FF00
+          }],
           ephemeral: true
         });
       }
 
-      // reset guild (尚未支援)
+      // reset guild
       if (subcommand === 'guild') {
+        await deletePlayersByGuild(guildId);
+        logger.warn(`[RESET][GUILD] ${adminId} 重置了伺服器 ${guildId} 的所有玩家資料`);
         return interaction.reply({
-          content: '⚠️ 目前尚未支援「僅重置本伺服器玩家」功能，僅能使用 `/reset all` 進行全服重置。\n如需支援此功能，請聯絡開發者。',
+          embeds: [{
+            description: `⚠️ 已成功重置本伺服器所有玩家資料（ID: ${guildId}）`,
+            color: 0xFFFF00
+          }],
           ephemeral: true
         });
       }
@@ -86,20 +100,29 @@ export default {
       if (subcommand === 'all') {
         if (!(SUPER_ADMINS.includes(adminId) || await isAdmin(guildId, adminId, config))) {
           return interaction.reply({
-            content: '❌ 你不是超級管理員或本伺服器指定管理員，不能進行全服重置！',
+            embeds: [{
+              description: '❌ 你不是超級管理員或本伺服器指定管理員，不能進行全服重置！',
+              color: 0xFF0000
+            }],
             ephemeral: true
           });
         }
         await deleteAllPlayersAllGuilds();
         logger.error(`[RESET][ALL] 管理員 ${adminId} 重置了全服所有玩家資料！`);
         return interaction.reply({
-          content: '⚠️ 已清空全服所有玩家資料！',
+          embeds: [{
+            description: '⚠️ 已清空全服所有玩家資料！',
+            color: 0xFFFF00
+          }],
           ephemeral: true
         });
       }
 
       return interaction.reply({
-        content: '❌ 不支援的重置類型。',
+        embeds: [{
+          description: '❌ 不支援的重置類型。',
+          color: 0xFF0000
+        }],
         ephemeral: true
       });
 
@@ -107,7 +130,10 @@ export default {
       const errorMsg = `[RESET][${subcommand}] 發生錯誤：${err instanceof Error ? err.message : JSON.stringify(err)}\n${err.stack ?? ''}`;
       logger.error(errorMsg);
       return interaction.reply({
-        content: `❌ 重置失敗，請稍後再試。\n\`\`\`\n${err.message ?? err}\n\`\`\``,
+        embeds: [{
+          description: `❌ 重置失敗，請稍後再試。\n\`\`\`\n${err.message ?? err}\n\`\`\``,
+          color: 0xFF0000
+        }],
         ephemeral: true
       });
     }
