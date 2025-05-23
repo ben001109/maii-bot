@@ -1,0 +1,182 @@
+[
+  {
+    "id": "wheat_seed",
+    "name": "小麥種子",
+    "type": "seed",
+    "category": "farm",
+    "price": 5,
+    "vendorAvailable": true,
+    "description": "可用來種植小麥的基本原料",
+    "productionTime": 60
+  },
+  {
+    "id": "corn_seed",
+    "name": "玉米種子",
+    "type": "seed",
+    "category": "farm",
+    "price": 6,
+    "vendorAvailable": true,
+    "description": "可用來種植玉米的基本原料",
+    "productionTime": 60
+  },
+  {
+    "id": "cultivation_soil",
+    "name": "栽培土",
+    "type": "soil",
+    "category": "farm",
+    "price": 15,
+    "vendorAvailable": true,
+    "description": "提供作物成長的基底環境",
+    "productionTime": 90
+  },
+  {
+    "id": "basic_fertilizer",
+    "name": "基礎肥料",
+    "type": "fertilizer",
+    "category": "farm",
+    "price": 12,
+    "vendorAvailable": true,
+    "description": "提升作物產量的常見施肥用品",
+    "productionTime": 90
+  },
+  {
+    "id": "organic_fertilizer",
+    "name": "有機肥料",
+    "type": "fertilizer",
+    "category": "farm",
+    "price": 18,
+    "vendorAvailable": true,
+    "description": "來源天然的作物促進劑，適用於有機農法",
+    "productionTime": 150
+  },
+  {
+    "id": "plastic_resin",
+    "name": "塑膠原料",
+    "type": "material",
+    "category": "factory",
+    "price": 18,
+    "vendorAvailable": false,
+    "description": "塑膠製品的基本加工原料，適用於包裝或容器生產",
+    "productionTime": 180
+  },
+  {
+    "id": "cardboard_sheet",
+    "name": "紙板原料",
+    "type": "material",
+    "category": "factory",
+    "price": 12,
+    "vendorAvailable": false,
+    "description": "用於製作紙箱與包裝材料的基本原料",
+    "productionTime": 150
+  },
+  {
+    "id": "yeast",
+    "name": "酵母",
+    "type": "ingredient",
+    "category": "factory",
+    "price": 10,
+    "vendorAvailable": true,
+    "description": "用於發酵麵團的常見食品添加物",
+    "productionTime": 100
+  },
+  {
+    "id": "starch_powder",
+    "name": "澱粉粉末",
+    "type": "ingredient",
+    "category": "factory",
+    "price": 14,
+    "vendorAvailable": true,
+    "description": "食品與黏著用途皆可使用的澱粉成分",
+    "productionTime": 120
+  },
+  {
+    "id": "steel",
+    "name": "鋼鐵",
+    "type": "material",
+    "category": "equipment",
+    "price": 20,
+    "vendorAvailable": false,
+    "description": "用於建築和製造的基本金屬材料",
+    "productionTime": 300
+  },
+  {
+    "id": "copper",
+    "name": "銅",
+    "type": "material",
+    "category": "equipment",
+    "price": 25,
+    "vendorAvailable": false,
+    "description": "用於電子產品和電纜的基本金屬材料",
+    "productionTime": 300
+  },
+  {
+    "id": "gear_motor",
+    "name": "齒輪馬達",
+    "type": "component",
+    "category": "equipment",
+    "price": 45,
+    "vendorAvailable": true,
+    "description": "設備組裝中常用的動力組件",
+    "productionTime": 240
+  },
+  {
+    "id": "rubber_tube",
+    "name": "橡膠軟管",
+    "type": "component",
+    "category": "equipment",
+    "price": 35,
+    "vendorAvailable": true,
+    "description": "設備或機械內部常見的連接耗材",
+    "productionTime": 180
+  },
+  {
+    "id": "sensor_chip",
+    "name": "感測晶片",
+    "type": "component",
+    "category": "equipment",
+    "price": 65,
+    "vendorAvailable": false,
+    "description": "設備智慧化控制所需之感測核心元件",
+    "productionTime": 360
+  },
+  {
+    "id": "delivery_box",
+    "name": "配送箱",
+    "type": "logistics",
+    "category": "logistics",
+    "price": 10,
+    "vendorAvailable": true,
+    "description": "用於運送物品的基礎物流容器",
+    "productionTime": 120
+  },
+  {
+    "id": "barcode_label",
+    "name": "條碼標籤",
+    "type": "logistics",
+    "category": "logistics",
+    "price": 3,
+    "vendorAvailable": true,
+    "description": "用於物流掃描與分類的標籤物資",
+    "productionTime": 60
+  },
+  {
+    "id": "forklift_battery",
+    "name": "堆高機電池",
+    "type": "logistics",
+    "category": "logistics",
+    "price": 55,
+    "vendorAvailable": true,
+    "description": "物流倉儲設備所需之能源補充品",
+    "productionTime": 240
+  },
+  {
+    "id": "packaging_film",
+    "name": "包裝膜",
+    "type": "logistics",
+    "category": "logistics",
+    "price": 6,
+    "vendorAvailable": true,
+    "description": "透明塑膠包裝材料，常用於密封與保鮮",
+    "productionTime": 90
+  }
+]

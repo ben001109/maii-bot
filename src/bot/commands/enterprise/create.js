@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
 import { createEnterprise } from '../../../services/enterpriseService.js';
 import { logger } from '../../utils/Logging.js';
-import { getOrCreatePlayer } from '../../../services/playerService.js';
+import { getOrCreatePlayer, updatePlayer } from '../../../services/playerService.js';
 import { getEphemeralForPlayer } from '../../utils/replyWithPrivacy.js';
 import { get } from 'node:http';
+import { EconHandler } from '../../utils/handler/ecomHandler.js';
 
 const enterpriseTypeMap = {
   farm: '農場',
@@ -19,14 +20,15 @@ function getEnterpriseTypeLabel(type) {
 /**
  * 格式化創建結果訊息
  */
-function formatCreateMsg(enterprise) {
+function formatCreateMsg(enterprise, player) {
   return [
     '🎉 你已成功創建企業！',
     `🏢 名稱：**${enterprise.name}**`,
     `📦 類型：${getEnterpriseTypeLabel(enterprise.type)}`,
     `📈 等級：${enterprise.level}`,
     `💰 每小時收入：$${enterprise.income}`,
-    `🕒 創立時間：${new Date(enterprise.createdAt).toLocaleString()}`
+    `🕒 創立時間：${new Date(enterprise.createdAt).toLocaleString()}`,
+    `🔁 創業次數：${player.enterpriseCreated}`
   ].join('\n');
 }
 
@@ -66,12 +68,58 @@ export default {
     const discordId = interaction.user.id;
     if (sub === 'create') {
       const player = await getOrCreatePlayer(discordId);
+
+      const currentTime = new Date(player.time ?? '2025-01-17T00:00:00Z');
+      const cooldownUntil = player.cooldowns?.enterpriseCreate
+        ? new Date(player.cooldowns.enterpriseCreate)
+        : null;
+
+      if (cooldownUntil && currentTime < cooldownUntil) {
+        const remainingSec = Math.floor((cooldownUntil - currentTime) / 1000);
+        const hrs = Math.floor(remainingSec / 3600);
+        const min = Math.floor((remainingSec % 3600) / 60);
+        const sec = remainingSec % 60;
+        const realSec = Math.floor(remainingSec / 6);
+        const realHrs = Math.floor(realSec / 3600);
+        const realMin = Math.floor((realSec % 3600) / 60);
+        const realS = realSec % 60;
+        return interaction.reply({
+          embeds: [{
+            description: `⌛ 你已經創建過企業了，請等待冷卻結束：**${hrs} 小時 ${min} 分 ${sec} 秒**（現實約 ${realHrs} 小時 ${realMin} 分 ${realS} 秒）後再試。`,
+            color: 0xFFA500
+          }],
+          ephemeral: true
+        });
+      }
+
+      const startupCost = 1000;
+      if ((player.money ?? 0) < startupCost) {
+        return interaction.reply({
+          embeds: [{
+            description: `❌ 創業需要 $${startupCost}，你的資金不足。`,
+            color: 0xFF0000
+          }],
+          ephemeral: true
+        });
+      }
+
+      // 扣款
+      await EconHandler.modifyMoney(discordId, -startupCost);
+
       const type = interaction.options.getString('type');
       const name = interaction.options.getString('name');
       try {
         const enterprise = await createEnterprise(discordId, type, name);
+
+        player.enterpriseCreated = (player.enterpriseCreated ?? 0) + 1;
+
+        player.cooldowns = player.cooldowns ?? {};
+        const nextTime = new Date(currentTime.getTime() + 10800 * 1000); // +3小時
+        player.cooldowns.enterpriseCreate = nextTime.toISOString();
+        await updatePlayer(discordId, player);
+
         const embed = {
-          description: formatCreateMsg(enterprise),
+          description: formatCreateMsg(enterprise, player),
           color: 0x00FF00,
         };
         await interaction.reply({

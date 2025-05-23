@@ -1,4 +1,4 @@
-<file name=0 path=/root/maii-bot/docs/TODO.md># 📝 MAII-Bot 開發待辦事項（TODO）
+# 📝 MAII-Bot 開發待辦事項（TODO）
 
 > 此檔案使用 GitHub 支援的 <details> 折疊區塊提升可讀性，請點擊展開各分區。
 
@@ -52,9 +52,15 @@
 ### player.js
 - [x] 整合 start, profile, private 為 /player 子指令
 - [x] /player help 子指令
+- [x] 初始化條件從金額改為 initialized flag
+- [x] 使用 initializePlayer() 統一欄位補全
+- [x] 子指令重構為 handler map 結構
 
 ### enterprise/create.js
 - [x] 整合企業服務並格式化回覆內容
+- [x] 玩家創業扣款處理
+- [x] 創業冷卻提示支援遊戲與現實時間
+- [x] 統計創業次數並顯示於訊息與 profile
 
 ### Admin
 
@@ -101,8 +107,6 @@
 
 </details>
 
-<details>
-<summary><strong>指令功能與優化</strong></summary>
 
 ### start.js
 - [ ] 顯示更多玩家初始資訊（職業等）
@@ -122,6 +126,7 @@
 
 ### enterprise/create.js
 - [x] 選擇型態/自訂名稱（支援中文類型與玩家自訂名稱）
+- [x] 類型顯示中文化（type → 中文對照表）
 - [ ] 創業上限、創業花費
 - [ ] 創建後導引經營
 
@@ -171,6 +176,14 @@
 <summary><strong>上游產業與產業鏈模組</strong></summary>
 
 ## 上游產業（/enterprise）
+
+- [x] 建立初始原料表資料格式（以 JSON 存放於 /data/materials）
+- [x] 實作 generate.js 將原料資料批次導入 Redis
+- [x] 依產業類別（farm、factory）分類管理原料資料
+- [ ] 設計「原料來源模式」：自產 vs 廠商叫貨
+- [ ] 支援每種原料是否可自產與所需配方（recipe）
+- [ ] 支援廠商叫貨系統：價格、冷卻、限購量
+- [ ] 對應指令邏輯：/factory produce /vendor order
 
 #### enterprise.js
 - [ ] 改造成上游產業供應商
@@ -237,6 +250,24 @@
 ### enterprise/price.js
 - [ ] 設定產品價格
 - [ ] 根據市場調整價格
+
+</details>
+
+<details>
+<summary><strong>遊戲循環與 Tick 系統</strong></summary>
+
+### enterprise/erp_runtime.js
+- [x] 整合所有每 tick 執行邏輯
+- [x] 呼叫 timerHandler, earningtimer 等模組
+- [x] 預留 passive 系統處理
+
+### enterprise/earningtimer.js
+- [x] 根據產業計算每秒收入並加總入帳
+
+### handler/timerHandler.js
+- [x] 推進每位玩家遊戲內時間
+- [x] 遊戲時間與現實時間轉換（6:1）
+- [x] 自動遞減冷卻計時
 
 </details>
 

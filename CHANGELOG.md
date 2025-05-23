@@ -84,3 +84,42 @@
 - Type display logic converted from codes to corresponding Chinese names, improving message readability and user experience.
 - 建立類型中英文對照表並整合於顯示訊息中，未來可擴充更多類型。
 - Established a type Chinese-English correspondence table integrated into display messages, allowing future expansion of more types.
+　
+## 進度記錄（2025-5-23）
+## Progress Log (2025-5-23)
+
+### 主要功能
+### Major Features
+- 建立 `erp_runtime` 模組整合所有遊戲每 tick 執行邏輯，包含時間推進、企業收入等。
+- Created `erp_runtime` module to integrate all per-tick game logic, including time progression and enterprise income.
+- 新增 `earningtimer` 處理每家企業每秒收入計算，並將結果加至玩家餘額。ㄋ
+- Added `earningtimer` to handle per-second income calculations for each enterprise, adding results to player balances.
+- 將所有自動計時相關功能集中至 `timerHandler`，支援每位玩家獨立遊戲時間、冷卻推進等。
+- Consolidated all automatic time functions into `timerHandler`, supporting per-player game time and cooldown advancement.
+- `/enterprise create` 指令整合資金檢查與冷卻邏輯，自動根據玩家狀態決定是否可創業。
+- Integrated balance check and cooldown logic into `/enterprise create` command, automatically determining if player can start a business.
+- 玩家創業行為將統計至 `enterpriseCreated`，並於個人資料中顯示。
+- Player's business creation behavior is now counted in `enterpriseCreated` and displayed in the profile.
+
+### 架構調整
+### Architecture Adjustments
+- 抽出 `initializePlayer()` 至 `playerService.js` 統一管理欄位預設值與補全邏輯。
+- Extracted `initializePlayer()` into `playerService.js` to centralize default value and field completion logic.
+- 將 `/player` 子指令全面拆分為 handler 函式結構，使用 dispatch map 控制邏輯清晰。
+- Refactored `/player` subcommands into handler function structure with dispatch map for clearer control logic.
+- 設立 `Constants.js` 定義冷卻對應名稱表，提升顯示人性化與國際化可擴展性。
+- Introduced `Constants.js` to define cooldown label mappings, improving display clarity and future internationalization support.
+
+### 修正
+### Fixes
+- 修正創業時 `EconHandler` 未導入錯誤，導致扣款失敗。
+- Fixed missing `EconHandler` import error during enterprise creation that caused deduction to fail.
+- 調整新玩家預設金額統一為 `$1000`，解決多處初始值不一致問題。
+- Unified new player default balance to `$1000` to resolve inconsistent initial values.
+- 修正 `/reset user` 執行後未同步初始化狀態，導致無法重新 `/start` 問題。
+- Fixed `/reset user` not re-initializing player state, which caused issues with `/start`.
+
+### 其他備註
+### Other Notes
+- 預留 `handlePassiveSystems()` 供未來被動機制使用，如研發、資源回復等。
+- Reserved `handlePassiveSystems()` for future passive system use, such as research or resource regeneration.

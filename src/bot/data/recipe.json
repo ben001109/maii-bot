@@ -1,0 +1,52 @@
+
+
+[
+  {
+    "id": "wheat",
+    "inputs": {
+      "wheat_seed": 1,
+      "cultivation_soil": 1,
+      "irrigation_water": 1
+    },
+    "outputAmount": 1
+  },
+  {
+    "id": "flour",
+    "inputs": {
+      "wheat": 1
+    },
+    "outputAmount": 1
+  },
+  {
+    "id": "bread",
+    "inputs": {
+      "flour": 1,
+      "yeast": 1
+    },
+    "outputAmount": 1
+  },
+  {
+    "id": "logistics_box",
+    "inputs": {
+      "cardboard_sheet": 1,
+      "plastic_resin": 1
+    },
+    "outputAmount": 1
+  },
+  {
+    "id": "motor_unit",
+    "inputs": {
+      "gear_motor": 1,
+      "copper": 1
+    },
+    "outputAmount": 1
+  },
+  {
+    "id": "control_panel",
+    "inputs": {
+      "industrial_frame": 1,
+      "copper": 1
+    },
+    "outputAmount": 1
+  }
+]

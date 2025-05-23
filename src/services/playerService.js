@@ -90,7 +90,7 @@ export async function deletePlayer(discordId) {
 
 /**
  * 預設玩家資料模板
- * @param {string} discordId
+ * @param {string} discordIdㄖㄢ
  * @param {string} guildId
  * @returns {Object}
  */
@@ -98,8 +98,10 @@ function createDefaultPlayer(discordId, guildId) {
   return {
     discordId,
     guildIds: [guildId],
-    money: 500,
+    money: 1000,
     enterprises: [],
+    time: '2025-01-17T00:00:00.000Z',
+    cooldowns: {},
     privacy: createDefaultPrivacy(), // 預設隱私欄位
   };
 }
@@ -135,6 +137,8 @@ function getPlayerKey(discordId) {
  */
 function ensurePlayerSchema(player) {
   if (!player.privacy) player.privacy = createDefaultPrivacy();
+  // 🆕 修補 guildIds 欄位
+  if (!Array.isArray(player.guildIds)) player.guildIds = [];
   // 處理 profileVisibility 缺漏
   if (!player.privacy.profileVisibility) {
     player.privacy.profileVisibility = { money: true, enterprises: true };
@@ -222,4 +226,60 @@ export async function deletePlayersByGuild(guildId) {
   } while (cursor !== '0');
 
   logger.warn(`[Redis] 已刪除伺服器 ${guildId} 的玩家資料，共 ${keysDeleted} 筆`);
+}
+
+/**
+ * 取得所有玩家資料
+ * @returns {Promise<Object[]>}
+ */
+export async function getAllPlayers() {
+  const scanAsync = util.promisify(redis.scan).bind(redis);
+  const getAsync = util.promisify(redis.get).bind(redis);
+  let cursor = '0';
+  const results = [];
+
+  do {
+    const [nextCursor, keys] = await scanAsync(cursor, 'MATCH', 'player:*', 'COUNT', 1000);
+    for (const key of keys) {
+      const data = await getAsync(key);
+      if (!data) continue;
+      try {
+        const parsed = ensurePlayerSchema(JSON.parse(data));
+        results.push(parsed);
+      } catch (e) {
+        logger.warn(`[Redis] 略過損毀的玩家資料 ${key}`);
+      }
+    }
+    cursor = nextCursor;
+  } while (cursor !== '0');
+
+  return results;
+}
+
+/**
+ * 直接寫入玩家資料
+ * @param {Object} player 完整的玩家物件
+ * @returns {Promise<void>}
+ */
+export async function setPlayer(player) {
+  if (!player?.discordId) throw new Error('缺少 discordId');
+  const key = getPlayerKey(player.discordId);
+  const data = ensurePlayerSchema(player);
+  await redis.set(key, JSON.stringify(data));
+  logger.debug(`[Redis] 寫入玩家 ${player.discordId}`);
+}
+
+/**
+ * 對現有玩家物件進行初始化欄位補全
+ * @param {Object} player 玩家物件
+ * @returns {Object}
+ */
+export function initializePlayer(player) {
+  player.money ??= 1000;
+  player.time ??= '2025-01-17T00:00:00.000Z';
+  player.enterpriseCreated ??= 0;
+  player.cooldowns ??= {};
+  player.privacy = fillDefaultPrivacy(player.privacy);
+  player.initialized = true;
+  return player;
 }

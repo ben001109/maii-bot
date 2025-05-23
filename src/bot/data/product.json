@@ -1,0 +1,112 @@
+[
+  {
+    "id": "wheat",
+    "name": "小麥",
+    "type": "product",
+    "category": "farm",
+    "price": 15,
+    "description": "由小麥種子種植獲得的農作物",
+    "producedFrom": ["wheat_seed", "cultivation_soil", "irrigation_water"],
+    "productionTime": 300
+  },
+  {
+    "id": "corn",
+    "name": "玉米",
+    "type": "product",
+    "category": "farm",
+    "price": 16,
+    "description": "由玉米種子種植獲得的作物",
+    "producedFrom": ["corn_seed", "cultivation_soil", "irrigation_water"],
+    "productionTime": 300
+  },
+  {
+    "id": "flour",
+    "name": "麵粉",
+    "type": "product",
+    "category": "factory",
+    "price": 25,
+    "description": "由小麥加工而成的食品原料",
+    "producedFrom": ["wheat"],
+    "productionTime": 180
+  },
+  {
+    "id": "logistics_box",
+    "name": "物流箱",
+    "type": "product",
+    "category": "logistics",
+    "price": 30,
+    "description": "組裝用於物流配送的容器",
+    "producedFrom": ["cardboard_sheet", "plastic_resin"],
+    "productionTime": 240
+  },
+  {
+    "id": "motor_unit",
+    "name": "馬達單元",
+    "type": "product",
+    "category": "equipment",
+    "price": 100,
+    "description": "由齒輪馬達與銅製作的動力核心模組",
+    "producedFrom": ["gear_motor", "copper"],
+    "productionTime": 360
+  },
+  {
+    "id": "bread",
+    "name": "麵包",
+    "type": "product",
+    "category": "factory",
+    "price": 35,
+    "description": "由麵粉與酵母烘焙而成的基礎食品",
+    "producedFrom": ["flour", "yeast"],
+    "productionTime": 240
+  },
+  {
+    "id": "delivery_bundle",
+    "name": "配送組合包",
+    "type": "product",
+    "category": "logistics",
+    "price": 60,
+    "description": "含物流箱與標籤的完整出貨包裝",
+    "producedFrom": ["logistics_box", "barcode_label"],
+    "productionTime": 180
+  },
+  {
+    "id": "industrial_frame",
+    "name": "工業骨架",
+    "type": "product",
+    "category": "equipment",
+    "price": 150,
+    "description": "由鋼鐵與塑膠製成的組裝骨架，可用於大型設備結構",
+    "producedFrom": ["steel", "plastic_resin"],
+    "productionTime": 360
+  },
+  {
+    "id": "control_panel",
+    "name": "控制面板",
+    "type": "product",
+    "category": "equipment",
+    "price": 220,
+    "description": "結合金屬與電子元件的設備操作面板",
+    "producedFrom": ["industrial_frame", "copper"],
+    "productionTime": 420
+  },
+  {
+    "id": "automated_arm",
+    "name": "自動化機械臂",
+    "type": "product",
+    "category": "equipment",
+    "price": 280,
+    "description": "具備精密運動功能的工業組件",
+    "producedFrom": ["motor_unit", "industrial_frame"],
+    "productionTime": 480
+  },
+  {
+    "id": "assembly_module",
+    "name": "組裝模組",
+    "type": "product",
+    "category": "equipment",
+    "price": 320,
+    "description": "由控制面板與工業骨架組成，可用於設備自動化建構",
+    "producedFrom": ["control_panel", "industrial_frame"],
+    "productionTime": 540
+  }
+]
