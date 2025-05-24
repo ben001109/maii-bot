@@ -1,5 +1,7 @@
 import { timerHandler } from '../utils/handler/timerHandler.js';
+import { handleEnterpriseEarnings } from '../utils/handler/earningtimer.js';
 import { Events } from 'discord.js';
+import { logger } from '../utils/Logging.js';
 
 export default {
   name: Events.ClientReady,
@@ -8,8 +10,9 @@ export default {
     setInterval(async () => {
       try {
         await timerHandler.handleGameTick(); // 遊戲時間邏輯處理
+        await handleEnterpriseEarnings();    // 企業收益處理
       } catch (err) {
-        console.error('[GameTick] 執行失敗:', err);
+        logger.error('[GameTick] 執行失敗:', err);
       }
     }, 6000); // 每 6 秒現實時間推進 1 秒遊戲時間
   }
