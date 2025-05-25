@@ -128,7 +128,448 @@ async function handleProfileLookup(interaction) {
   }
   initializePlayer(player);
   const privacy = player.privacy ?? {};
+// src/bot/commands/player.js
 
+  import {SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle} from 'discord.js';
+  import {playerManager} from '../utils/PlayerManager.js';
+  import {replyUtils} from '../utils/ReplyUtils.js';
+  import {logger} from '../utils/Logger.js';
+
+  /**
+   * 玩家指令處理器映射
+   */
+  const playerCommandHandlers = {
+    /**
+     * 建立新角色
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async start(interaction) {
+      try {
+        const {user} = interaction;
+
+        // 檢查玩家是否已經初始化
+        const isInitialized = await playerManager.isPlayerInitialized(user.id);
+
+        if (isInitialized) {
+          return await replyUtils.translate(interaction, 'player.start.alreadyRegistered', {}, {type: 'warning'});
+        }
+
+        // 初始化玩家
+        const initialMoney = 10000;
+        const player = await playerManager.initializePlayer(user.id, user.username, {
+          initialMoney,
+          occupation: '平民'
+        });
+
+        // 建立成功訊息欄位
+        const fields = [
+          {
+            name: '💰 初始資金',
+            value: `$${playerManager.formatMoney(initialMoney)}`,
+            inline: true
+          },
+          {
+            name: '🆕 帳號狀態',
+            value: '新帳號',
+            inline: true
+          },
+          {
+            name: '👨‍💼 職業',
+            value: player.occupation || '平民',
+            inline: true
+          }
+        ];
+
+        // 回覆成功訊息
+        await replyUtils.translate(interaction, 'player.start.success', {}, {
+          type: 'success',
+          fields
+        });
+
+        logger.info(`玩家 ${user.tag} (${user.id}) 成功建立角色`);
+      } catch (error) {
+        logger.error(`建立角色時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    },
+
+    /**
+     * 查看玩家資料
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async profile(interaction) {
+      try {
+        const {options, user} = interaction;
+
+        // 獲取目標用戶（如果有指定）
+        const targetUser = options.getUser('user') || user;
+        const isSelf = targetUser.id === user.id;
+
+        // 載入中提示
+        await replyUtils.deferReply(interaction);
+
+        // 獲取玩家資料
+        const playerData = await playerManager.getPlayer(targetUser.id, isSelf);
+
+        // 檢查玩家是否存在
+        if (!playerData || !playerData.initialized) {
+          return await replyUtils.translate(interaction, 'player.profile.notInitialized', {}, {type: 'warning'});
+        }
+
+        // 檢查隱私設定
+        if (!isSelf && !playerData.isProfilePublic) {
+          return await replyUtils.translate(interaction, 'player.profile.privateProfile', {}, {type: 'warning'});
+        }
+
+        // 創建玩家資料嵌入
+        const embed = replyUtils.createPlayerEmbed(targetUser, playerData);
+
+        // 回覆
+        await interaction.editReply({embeds: [embed]});
+      } catch (error) {
+        logger.error(`查看玩家資料時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    },
+
+    /**
+     * 設置隱私選項
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async privacy(interaction) {
+      try {
+        const {user} = interaction;
+
+        // 檢查玩家是否已經初始化
+        const isInitialized = await playerManager.isPlayerInitialized(user.id);
+
+        if (!isInitialized) {
+          return await replyUtils.translate(interaction, 'errors.notInitialized', {}, {type: 'error'});
+        }
+
+        // 獲取玩家資料
+        const playerData = await playerManager.getPlayer(user.id, true);
+
+        // 創建切換按鈕
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('privacy_public')
+                    .setLabel('公開')
+                    .setStyle(playerData.isProfilePublic ? ButtonStyle.Success : ButtonStyle.Secondary)
+                    .setDisabled(playerData.isProfilePublic),
+                new ButtonBuilder()
+                    .setCustomId('privacy_private')
+                    .setLabel('私密')
+                    .setStyle(!playerData.isProfilePublic ? ButtonStyle.Danger : ButtonStyle.Secondary)
+                    .setDisabled(!playerData.isProfilePublic)
+            );
+
+        // 發送隱私設定訊息
+        const reply = await replyUtils.translate(interaction, 'player.privacy.status', {
+          status: playerData.isProfilePublic ? '公開' : '私密'
+        }, {
+          components: [row]
+        });
+
+        // 設置按鈕監聽器
+        const filter = i => (i.customId === 'privacy_public' || i.customId === 'privacy_private') && i.user.id === user.id;
+        const collector = reply.createMessageComponentCollector({filter, time: 60000, max: 1});
+
+        collector.on('collect', async i => {
+          // 更新隱私設定
+          const isPublic = i.customId === 'privacy_public';
+          await playerManager.setPlayerPrivacy(user.id, isPublic);
+
+          // 更新按鈕
+          const newRow = new ActionRowBuilder()
+              .addComponents(
+                  new ButtonBuilder()
+                      .setCustomId('privacy_public')
+                      .setLabel('公開')
+                      .setStyle(isPublic ? ButtonStyle.Success : ButtonStyle.Secondary)
+                      .setDisabled(isPublic),
+                  new ButtonBuilder()
+                      .setCustomId('privacy_private')
+                      .setLabel('私密')
+                      .setStyle(!isPublic ? ButtonStyle.Danger : ButtonStyle.Secondary)
+                      .setDisabled(!isPublic)
+              );
+
+          // 回覆更新訊息
+          await i.update({
+            content: `隱私設定已更新為: ${isPublic ? '公開' : '私密'}`,
+            components: [newRow]
+          });
+        });
+
+        collector.on('end', async collected => {
+          if (collected.size === 0) {
+            await interaction.editReply({components: []});
+          }
+        });
+      } catch (error) {
+        logger.error(`設置隱私選項時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    },
+
+    /**
+     * 顯示幫助
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async help(interaction) {
+      try {
+        // 建立幫助訊息欄位
+        const fields = [
+          {
+            name: '🚀 /player start',
+            value: '建立新角色並開始遊戲',
+            inline: false
+          },
+          {
+            name: '👤 /player profile [用戶]',
+            value: '查看自己或他人的角色資料',
+            inline: false
+          },
+          {
+            name: '🔒 /player privacy',
+            value: '設置個人資料隱私選項',
+            inline: false
+          },
+          {
+            name: '💸 /player transfer <用戶> <金額> [描述]',
+            value: '轉帳給其他玩家',
+            inline: false
+          },
+          {
+            name: '📊 /player balance',
+            value: '查看資金餘額和近期交易記錄',
+            inline: false
+          }
+        ];
+
+        // 回覆幫助訊息
+        await replyUtils.translate(interaction, 'player.help.title', {}, {
+          title: '📖 玩家指令幫助',
+          fields
+        });
+      } catch (error) {
+        logger.error(`顯示幫助時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    },
+
+    /**
+     * 轉帳
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async transfer(interaction) {
+      try {
+        const {options, user} = interaction;
+
+        // 獲取參數
+        const targetUser = options.getUser('user');
+        const amount = options.getInteger('amount');
+        const description = options.getString('description') || '轉帳';
+
+        // 基本檢查
+        if (targetUser.id === user.id) {
+          return await replyUtils.translate(interaction, 'errors.invalidInput', {}, {type: 'error'});
+        }
+
+        if (amount <= 0) {
+          return await replyUtils.translate(interaction, 'errors.invalidInput', {}, {type: 'error'});
+        }
+
+        // 檢查玩家是否已經初始化
+        const isInitialized = await playerManager.isPlayerInitialized(user.id);
+
+        if (!isInitialized) {
+          return await replyUtils.translate(interaction, 'errors.notInitialized', {}, {type: 'error'});
+        }
+
+        // 檢查目標玩家是否已經初始化
+        const isTargetInitialized = await playerManager.isPlayerInitialized(targetUser.id);
+
+        if (!isTargetInitialized) {
+          return await replyUtils.translate(interaction, 'errors.notFound', {}, {type: 'error'});
+        }
+
+        // 載入中提示
+        await replyUtils.deferReply(interaction);
+
+        // 檢查餘額是否足夠
+        const canAfford = await playerManager.canPlayerAfford(user.id, amount);
+
+        if (!canAfford) {
+          return await replyUtils.translate(interaction, 'errors.notEnoughMoney', {}, {type: 'error'});
+        }
+
+        // 執行轉帳
+        const result = await playerManager.transferMoney(user.id, targetUser.id, amount, description);
+
+        // 回覆成功訊息
+        await replyUtils.success(interaction, `成功轉帳 $${playerManager.formatMoney(amount)} 給 ${targetUser.username}！`, {
+          fields: [
+            {
+              name: '💸 交易金額',
+              value: `$${playerManager.formatMoney(amount)}`,
+              inline: true
+            },
+            {
+              name: '📝 交易描述',
+              value: description,
+              inline: true
+            }
+          ]
+        });
+
+        logger.info(`玩家 ${user.tag} (${user.id}) 轉帳 $${amount} 給 ${targetUser.tag} (${targetUser.id})`);
+      } catch (error) {
+        logger.error(`轉帳時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    },
+
+    /**
+     * 查看餘額
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async balance(interaction) {
+      try {
+        const {user} = interaction;
+
+        // 檢查玩家是否已經初始化
+        const isInitialized = await playerManager.isPlayerInitialized(user.id);
+
+        if (!isInitialized) {
+          return await replyUtils.translate(interaction, 'errors.notInitialized', {}, {type: 'error'});
+        }
+
+        // 載入中提示
+        await replyUtils.deferReply(interaction);
+
+        // 獲取玩家資料
+        const playerData = await playerManager.getPlayer(user.id, true);
+
+        // 獲取最近交易記錄
+        const transactions = await playerManager.getPlayerTransactions(user.id, 5);
+
+        // 格式化交易記錄
+        let transactionText = '無交易記錄';
+
+        if (transactions.length > 0) {
+          transactionText = transactions.map(t => {
+            const formattedAmount = t.amount > 0 ? `+$${playerManager.formatMoney(t.amount)}` : `-$${playerManager.formatMoney(Math.abs(t.amount))}`;
+            const date = t.createdAt.toLocaleDateString('zh-TW');
+            return `${date} | ${formattedAmount} | ${t.description}`;
+          }).join('\n');
+        }
+
+        // 回覆餘額訊息
+        await replyUtils.info(interaction, `您的餘額為: $${playerManager.formatMoney(playerData.money)}`, {
+          title: '💰 餘額查詢',
+          fields: [
+            {
+              name: '🕒 最近交易記錄',
+              value: `\`\`\`\n${transactionText}\n\`\`\``,
+              inline: false
+            }
+          ]
+        });
+      } catch (error) {
+        logger.error(`查看餘額時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    }
+  };
+
+  /**
+   * 玩家指令
+   */
+  export const playerCommand = {
+    data: new SlashCommandBuilder()
+        .setName('player')
+        .setDescription('玩家相關指令')
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('start')
+                .setDescription('建立新角色並開始遊戲')
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('profile')
+                .setDescription('查看角色資料')
+                .addUserOption(option =>
+                    option
+                        .setName('user')
+                        .setDescription('指定要查看的用戶')
+                        .setRequired(false)
+                )
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('privacy')
+                .setDescription('設置個人資料隱私選項')
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('help')
+                .setDescription('顯示玩家指令幫助')
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('transfer')
+                .setDescription('轉帳給其他玩家')
+                .addUserOption(option =>
+                    option
+                        .setName('user')
+                        .setDescription('要轉帳的目標用戶')
+                        .setRequired(true)
+                )
+                .addIntegerOption(option =>
+                    option
+                        .setName('amount')
+                        .setDescription('轉帳金額')
+                        .setRequired(true)
+                        .setMinValue(1)
+                )
+                .addStringOption(option =>
+                    option
+                        .setName('description')
+                        .setDescription('交易描述')
+                        .setRequired(false)
+                )
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+                .setName('balance')
+                .setDescription('查看資金餘額和近期交易記錄')
+        ),
+
+    /**
+     * 執行指令
+     * @param {Object} interaction - Discord 互動物件
+     */
+    async execute(interaction) {
+      try {
+        const subcommand = interaction.options.getSubcommand();
+
+        // 檢查子命令處理器是否存在
+        if (playerCommandHandlers[subcommand]) {
+          await playerCommandHandlers[subcommand](interaction);
+        } else {
+          await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+        }
+      } catch (error) {
+        logger.error(`執行玩家指令時出錯: ${error.message}`, error);
+        await replyUtils.translate(interaction, 'errors.generic', {}, {type: 'error'});
+      }
+    }
+  };
+
+  export default playerCommand;
   if (privacy.searchable === false) {
     const embed = new EmbedBuilder()
       .setDescription("🔒 此玩家設定為不可查詢。")

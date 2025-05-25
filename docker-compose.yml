@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  maii-bot:
+    container_name: maii-bot
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - maii-net
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - maii-net
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: maii
+      MYSQL_USER: bot
+      MYSQL_PASSWORD: botpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - maii-net
+
+volumes:
+  mysql_data:
+
+networks:
+  maii-net:
+    driver: bridge
