@@ -84,7 +84,7 @@
 - Type display logic converted from codes to corresponding Chinese names, improving message readability and user experience.
 - 建立類型中英文對照表並整合於顯示訊息中，未來可擴充更多類型。
 - Established a type Chinese-English correspondence table integrated into display messages, allowing future expansion of more types.
-　
+
 ## 進度記錄（2025-5-23）
 ## Progress Log (2025-5-23)
 
@@ -92,7 +92,7 @@
 ### Major Features
 - 建立 `erp_runtime` 模組整合所有遊戲每 tick 執行邏輯，包含時間推進、企業收入等。
 - Created `erp_runtime` module to integrate all per-tick game logic, including time progression and enterprise income.
-- 新增 `earningtimer` 處理每家企業每秒收入計算，並將結果加至玩家餘額。ㄋ
+- 新增 `earningtimer` 處理每家企業每秒收入計算，並將結果加至玩家餘額。
 - Added `earningtimer` to handle per-second income calculations for each enterprise, adding results to player balances.
 - 將所有自動計時相關功能集中至 `timerHandler`，支援每位玩家獨立遊戲時間、冷卻推進等。
 - Consolidated all automatic time functions into `timerHandler`, supporting per-player game time and cooldown advancement.
@@ -123,3 +123,68 @@
 ### Other Notes
 - 預留 `handlePassiveSystems()` 供未來被動機制使用，如研發、資源回復等。
 - Reserved `handlePassiveSystems()` for future passive system use, such as research or resource regeneration.
+
+## 進度記錄（2025-6-1）
+
+## Progress Log (2025-6-1)
+
+### 主要功能
+
+### Major Features
+
+- 新增 `Permissions.js` 權限檢查工具，提供權限驗證與檢查的相關功能。
+- Added `Permissions.js` permission checking tool, providing permission validation and checking functionality.
+- 新增 `AdminManager.js` 管理員權限管理類，使用 Redis 快取管理員信息，使用 Prisma 持久儲存管理員數據。
+- Added `AdminManager.js` administrator permission management class, using Redis cache for admin information and Prisma
+  for persistent storage.
+- 改進 i18n 多語系支援，增加缺失翻譯記錄與用戶語言偏好設定。
+- Improved i18n multilingual support, adding missing translation recording and user language preference settings.
+- 新增環境變數範例檔案 `.env.example`，方便新開發者設置環境。
+- Added environment variable example file `.env.example` to facilitate environment setup for new developers.
+- 新增 `.huskyrc` 配置 Git hooks，提升代碼品質控制。
+- Added `.huskyrc` to configure Git hooks, enhancing code quality control.
+
+### 架構調整
+
+### Architecture Adjustments
+
+- 重構 CommandHandler.js，改進指令處理流程與錯誤處理。
+- Refactored CommandHandler.js, improving command processing flow and error handling.
+- 優化 Redis 客戶端配置，增強連接穩定性與錯誤處理。
+- Optimized Redis client configuration, enhancing connection stability and error handling.
+- 更新 Docker 配置，移除 Dockerfile，改用 docker-compose.yml 進行容器管理。
+- Updated Docker configuration, removed Dockerfile, now using docker-compose.yml for container management.
+- 改進 Logger 系統，支援更詳細的日誌分類與格式化。
+- Improved Logger system, supporting more detailed log categorization and formatting.
+
+### 文檔更新
+
+### Documentation Updates
+
+- 新增 Docker 故障排除文檔 `Docker_Troubleshooting.md`，提供常見問題解決方案。
+- Added Docker troubleshooting documentation `Docker_Troubleshooting.md`, providing solutions for common issues.
+- 更新安裝指南 `INSTALL.md`，反映最新的設置步驟。
+- Updated installation guide `INSTALL.md` to reflect the latest setup steps.
+- 更新 README.md，增加新功能說明與使用指南。
+- Updated README.md, adding new feature descriptions and usage guidelines.
+
+### 修正
+
+### Fixes
+
+- 修正 CommandSync.js 中的同步問題，提高指令註冊穩定性。
+- Fixed synchronization issues in CommandSync.js, improving command registration stability.
+- 修正 admin.js 指令中的權限檢查邏輯，確保只有授權用戶可執行管理操作。
+- Fixed permission checking logic in admin.js commands, ensuring only authorized users can perform administrative
+  operations.
+- 修正 .gitignore 配置，避免敏感文件被意外提交。
+- Fixed .gitignore configuration to prevent accidental submission of sensitive files.
+
+### 其他備註
+
+### Other Notes
+
+- 新增 manager.sh 腳本，簡化開發與部署流程。
+- Added manager.sh script to simplify development and deployment processes.
+- 優化 prisma schema，支援更複雜的數據關係與查詢。
+- Optimized prisma schema to support more complex data relationships and queries.
