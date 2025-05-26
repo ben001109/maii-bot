@@ -1,43 +1,57 @@
-version: "3.9"
+# 現代化的 Docker Compose 文件，無需 version 屬性
+
 services:
   maii-bot:
+    image: node:20-alpine
     container_name: maii-bot
-    build: .
     restart: unless-stopped
-    env_file: .env
+    working_dir: /app
     volumes:
-      - .:/app
+      - ./:/app
       - /app/node_modules
     depends_on:
+      - postgres
       - redis
-      - mysql
+    environment:
+      - NODE_ENV=production
+    command: >
+      sh -c "npm install --omit=dev && 
+             npx prisma generate && 
+             npx prisma migrate deploy && 
+             node src/index.js"
     networks:
-      - maii-net
+      - maii-network
 
-  redis:
-    image: redis:7
-    container_name: redis
-    restart: unless-stopped
-    networks:
-      - maii-net
-
-  mysql:
-    image: mysql:8
-    container_name: mysql
+  postgres:
+    image: postgres:14-alpine
+    container_name: maii-postgres
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: maii
-      MYSQL_USER: bot
-      MYSQL_PASSWORD: botpassword
+      POSTGRES_PASSWORD: Ben00334.com
+      POSTGRES_USER: bot
+      POSTGRES_DB: maii
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     networks:
-      - maii-net
+      - maii-network
+    ports:
+      - "5432:5432"
 
-volumes:
-  mysql_data:
+  redis:
+    image: redis:7-alpine
+    container_name: maii-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - maii-network
+    ports:
+      - "6379:6379"
 
 networks:
-  maii-net:
+  maii-network:
     driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:

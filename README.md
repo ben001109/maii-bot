@@ -1,5 +1,21 @@
 # 🌟 MAII-Bot 鷗麥麥麥 Discord 經濟系統機器人
 
+# 🌟 MAII-Bot Discord 機器人
+
+> Discord 經濟遊戲機器人
+
+## 快速開始
+
+### 自動安裝 (推薦)
+
+使用我們的設定腳本自動完成所有配置:
+
+```bash
+# 給予腳本執行權限
+chmod +x setup.sh
+
+# 執行設定精靈
+./setup.sh
 [![install](https://img.shields.io/badge/Install-%E5%AE%89%E8%A3%9D-blue)](./docs/INSTALL.md)
 [![commands](https://img.shields.io/badge/Commands-%E6%8C%87%E4%BB%A4-orange)](./docs/COMMANDS.md)
 [![todo](https://img.shields.io/badge/TODO-%E5%BE%85%E8%AB%AE%E9%A0%85-lightgrey)](./docs/TODO.md)

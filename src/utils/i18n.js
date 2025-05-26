@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {logger} from './Logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 // 支援的語言列表
 export const SUPPORTED_LANGUAGES = ['zh-TW', 'en-US'];

@@ -14,7 +14,47 @@ model Player {
   privacy   Json?
   enterprises String[] @default([])
 }
+// 這是 Prisma 的資料庫結構定義文件
 
+// 管理員表格
+model Admin {
+  id          String   @id @default(uuid())
+  discordId   String   @unique // Discord 用戶 ID
+  username    String // Discord 用戶名
+  permissions String[] // 權限列表
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("admins")
+  @@index([discordId])
+}
+
+// 用戶表格
+model User {
+  id        String   @id @default(uuid())
+  discordId String   @unique // Discord 用戶 ID
+  username  String // Discord 用戶名
+  balance   Int      @default(0) // 用戶餘額
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+  @@index([discordId])
+}
+
+// 交易記錄表格
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      String // 用戶 ID
+  amount      Int // 金額 (正數表示收入，負數表示支出)
+  description String // 交易描述
+  type        String // 交易類型 (daily, work, transfer, shop, etc.)
+  createdAt   DateTime @default(now())
+
+  @@map("transactions")
+  @@index([userId])
+  @@index([type])
+}
 model Enterprise {
   id        String   @id @default(uuid())
   owner     String

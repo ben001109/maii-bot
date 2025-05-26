@@ -1,7 +1,8 @@
 // 📁 src/redis/redisClient.js
 import Redis from 'ioredis';
-import { createRequire } from 'node:module';
-import { logger } from '../bot/utils/Logging.js';
+import {createRequire} from 'node:module';
+import {config} from '../config/config.js';
+import {logger} from '../utils/Logger.js';
 
 const require = createRequire(import.meta.url);
 const config = require('../config/config.json');
@@ -15,10 +16,6 @@ const redisConfig = {
 
 let redis;
 // src/redis/redisClient.js
-
-import Redis from 'ioredis';
-import {config} from '../config/index.js';
-import {logger} from '../utils/Logger.js';
 
 // Create logger for Redis module
 const redisLogger = logger.child({name: 'redis'});
