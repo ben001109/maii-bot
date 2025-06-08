@@ -1,3 +1,7 @@
+export const name = 'ping';
+export function execute() {
+  return 'pong';
+}
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {

@@ -153,6 +153,11 @@ The API service will be available at `http://localhost:3000`.
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
+├── commandHandler.js
+├── bot
+│   ├── index.js
+│   └── commands
+│       └── ping.js
 ├── logger.js
 ├── index.js
 ├── package.json
@@ -176,6 +181,11 @@ maii-bot/
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
+├── commandHandler.js
+├── bot
+│   ├── index.js
+│   └── commands
+│       └── ping.js
 ├── logger.js
 ├── index.js
 ├── package.json
