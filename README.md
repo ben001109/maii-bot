@@ -1,6 +1,8 @@
 # Maii Bot
 
-This is a minimal Node.js project with ESLint and Prettier configured.
+This is a minimal Node.js project with ESLint and Prettier configured. It uses
+[winston](https://github.com/winstonjs/winston) for logging. Logs are written to
+`logs/app.log`.
 
 ## Commands
 
@@ -14,6 +16,7 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 .
 ├── eslint.config.mjs
 ├── .prettierrc
+├── logger.js
 ├── index.js
 ├── package.json
 ├── test.js
@@ -27,12 +30,17 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 maii-bot/
 ├── eslint.config.mjs
 ├── .prettierrc
+├── logger.js
 ├── index.js
 ├── package.json
 ├── test.js
 ├── LICENSE
 └── README.md
 ```
+
+## Log Files
+
+Logs are stored in `logs/app.log` when the application or tests run.
 
 ## License
 
