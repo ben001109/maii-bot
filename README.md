@@ -22,6 +22,7 @@ This project aims to simulate Taiwan's economy in a restaurant management game. 
 ├── API/
 ├── DCACT/
 ├── Dockerfile
+├── PROJECT_PLAN.md
 ├── README.md
 ├── TODO.md
 ├── bot/
@@ -63,6 +64,7 @@ This project aims to simulate Taiwan's economy in a restaurant management game. 
 ├── API/
 ├── DCACT/
 ├── Dockerfile
+├── PROJECT_PLAN.md
 ├── README.md
 ├── TODO.md
 ├── bot/
