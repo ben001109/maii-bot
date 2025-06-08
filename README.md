@@ -17,6 +17,7 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 ├── index.js
 ├── package.json
 ├── test.js
+├── LICENSE
 └── README.md
 ```
 
@@ -29,5 +30,10 @@ maii-bot/
 ├── index.js
 ├── package.json
 ├── test.js
+├── LICENSE
 └── README.md
 ```
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
