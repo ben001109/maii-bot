@@ -1,5 +1,7 @@
 # Maii Bot
-
+This is a minimal Node.js project with ESLint and Prettier configured. It uses
+[winston](https://github.com/winstonjs/winston) for logging. Logs are written to
+`logs/app.log`.
 This repository holds the code for Maii Bot.
 
 ## Project tree
@@ -115,7 +117,6 @@ npm run bot
 ├── package.json
 └── web/
 ```
-=======
 # Maii Bot
 
 This is a minimal Node.js project with ESLint and Prettier configured.
@@ -152,6 +153,7 @@ The API service will be available at `http://localhost:3000`.
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
+├── logger.js
 ├── index.js
 ├── package.json
 ├── test.js
@@ -174,12 +176,17 @@ maii-bot/
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
+├── logger.js
 ├── index.js
 ├── package.json
 ├── test.js
 ├── LICENSE
 └── README.md
 ```
+
+## Log Files
+
+Logs are stored in `logs/app.log` when the application or tests run.
 
 ## License
 
