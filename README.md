@@ -12,6 +12,10 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 
 ```
 .
+├── .github
+│   └── workflows
+│       └── ci.yml
+├── Dockerfile
 ├── eslint.config.mjs
 ├── .prettierrc
 ├── index.js
@@ -25,6 +29,10 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 
 ```
 maii-bot/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── Dockerfile
 ├── eslint.config.mjs
 ├── .prettierrc
 ├── index.js
