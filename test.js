@@ -10,3 +10,7 @@ const result = await handler.execute('ping');
 assert.strictEqual(result, 'pong');
 
 console.log('All tests passed!');
+import logger from './logger.js';
+
+assert.strictEqual(add(1, 2), 3);
+logger.info('All tests passed!');
