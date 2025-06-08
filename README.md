@@ -1,48 +1,41 @@
 # Maii Bot
-This is a minimal Node.js project with ESLint and Prettier configured. It uses
-[winston](https://github.com/winstonjs/winston) for logging. Logs are written to
-`logs/app.log`.
-This repository holds the code for Maii Bot.
 
-## Project tree
+Restaurant Economy Game 餐飲系統遊戲
 
-```
-.
-├── CHANGELOG.md
-├── README.md
-├── index.js
-└── package.json
-```
-=======
-# Restaurant Economy Game 餐飲系統遊戲
+This project simulates Taiwan's economy in a restaurant management game. It is built around a Discord bot and aims to support web, desktop and mobile platforms. All text should be internationalized.
 
-## English
-This project aims to simulate Taiwan's economy in a restaurant management game. It is designed around a Discord bot and will support multiple platforms including web, desktop and mobile. All text should be internationalized.
+## Features
 
-### Features
 - Discord bot with slash commands
 - Express API server
 - Placeholder directories for multiplatform clients
-- Docker container support (basic)
+- Docker container support
 
-### Requirements
+## Requirements
+
 - Node.js 20 or later
 
-### Configuration
+## Configuration
+
 1. Copy `config.example.json` to `config.json` and add your Discord token.
 2. Optionally adjust the API port.
 
-### Usage
+## Usage
+
 Run the API server:
+
 ```bash
 npm run api
 ```
+
 Run the Discord bot:
+
 ```bash
 npm run bot
 ```
 
-### Project Structure
+## Project Structure
+
 ```
 .
 ├── API/
@@ -56,7 +49,10 @@ npm run bot
 │   └── utils/
 ├── config.example.json
 ├── config.js
+├── docker-compose.yml
+├── eslint.config.mjs
 ├── index.js
+├── logger.js
 ├── multiplatform/
 │   ├── Darwin/
 │   ├── android/
@@ -66,60 +62,6 @@ npm run bot
 ├── package.json
 └── web/
 ```
-
-## 中文
-這個專案用來模擬台灣經濟系統的餐飲管理遊戲，核心為 Discord 機器人，並計畫支援網頁、桌面與行動裝置等多平台。所有文字皆需 i18n 處理。
-
-### 特點
-- 支援 Discord bot
-- 基礎 Express API 服務
-- 多平台目錄架構
-- 整合 Docker 容器
-
-### 系統需求
-- Node.js 20 以上版本
-
-### 設定檔
-1. 複製 `config.example.json` 成 `config.json` 並填入 Discord token。
-2. 可以修改 API 端口號。
-
-### 執行方式
-啟動 API 伺服器：
-```bash
-npm run api
-```
-啟動 Discord 機器人：
-```bash
-npm run bot
-```
-
-### 專案結構
-```
-.
-├── API/
-├── DCACT/
-├── Dockerfile
-├── README.md
-├── TODO.md
-├── bot/
-│   ├── commands/
-│   ├── handler/
-│   └── utils/
-├── config.example.json
-├── config.js
-├── index.js
-├── multiplatform/
-│   ├── Darwin/
-│   ├── android/
-│   ├── iOS/
-│   ├── linux/
-│   └── windows/
-├── package.json
-└── web/
-```
-# Maii Bot
-
-This is a minimal Node.js project with ESLint and Prettier configured.
 
 ## Commands
 
@@ -137,62 +79,6 @@ docker compose up
 ```
 
 The API service will be available at `http://localhost:3000`.
-
-## Project Structure
-
-```
-.
-├── .github
-│   └── workflows
-│       └── ci.yml
-├── Dockerfile
-├── api
-│   └── index.js
-├── bot
-│   └── index.js
-├── docker-compose.yml
-├── eslint.config.mjs
-├── .prettierrc
-├── commandHandler.js
-├── bot
-│   ├── index.js
-│   └── commands
-│       └── ping.js
-├── logger.js
-├── index.js
-├── package.json
-├── test.js
-├── LICENSE
-└── README.md
-```
-
-## Detailed Structure
-
-```
-maii-bot/
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── Dockerfile
-├── api
-│   └── index.js
-├── bot
-│   └── index.js
-├── docker-compose.yml
-├── eslint.config.mjs
-├── .prettierrc
-├── commandHandler.js
-├── bot
-│   ├── index.js
-│   └── commands
-│       └── ping.js
-├── logger.js
-├── index.js
-├── package.json
-├── test.js
-├── LICENSE
-└── README.md
-```
 
 ## Log Files
 
