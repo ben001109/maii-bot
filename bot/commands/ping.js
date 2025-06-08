@@ -1,10 +1,12 @@
+import { SlashCommandBuilder } from 'discord.js';
+
 export const name = 'ping';
+
 export function execute() {
   return 'pong';
 }
-const { SlashCommandBuilder } = require('discord.js');
 
-module.exports = {
+export const slashCommand = {
   data: new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Replies with Pong!'),
