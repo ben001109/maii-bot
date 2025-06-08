@@ -1,4 +1,10 @@
 import { CommandHandler } from '../commandHandler.js';
+import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
+import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'url';
+import { loadLocale } from './utils/i18n.js';
+import config from '../config.js';
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
@@ -17,16 +23,9 @@ if (
 setInterval(() => {
   console.log('Bot service running');
 }, 60000);
-const {
-  Client,
-  GatewayIntentBits,
-  Partials,
-  Collection,
-} = require('discord.js');
-const path = require('node:path');
-const fs = require('node:fs');
-const { loadLocale } = require('./utils/i18n');
-const config = require('../config');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
@@ -36,10 +35,13 @@ const client = new Client({
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
-fs.readdirSync(commandsPath).forEach((file) => {
-  const command = require(path.join(commandsPath, file));
-  client.commands.set(command.data.name, command);
-});
+for (const file of fs.readdirSync(commandsPath)) {
+  const command = await import(path.join(commandsPath, file));
+  const cmd = command.slashCommand || command.default || command;
+  if (cmd?.data?.name) {
+    client.commands.set(cmd.data.name, cmd);
+  }
+}
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
