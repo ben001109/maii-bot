@@ -125,11 +125,27 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 - `npm run lint` – run ESLint on the project files.
 - `npm run format` – format the files using Prettier.
 - `npm test` – run the simple test script.
+- `docker compose up` – start the API and bot services.
+
+## Docker Compose Usage
+
+Start both services with:
+
+```sh
+docker compose up
+```
+
+The API service will be available at `http://localhost:3000`.
 
 ## Project Structure
 
 ```
 .
+├── api
+│   └── index.js
+├── bot
+│   └── index.js
+├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
 ├── index.js
@@ -143,6 +159,11 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 
 ```
 maii-bot/
+├── api
+│   └── index.js
+├── bot
+│   └── index.js
+├── docker-compose.yml
 ├── eslint.config.mjs
 ├── .prettierrc
 ├── index.js

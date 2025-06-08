@@ -1,3 +1,7 @@
+setInterval(() => {
+  console.log('Bot service running');
+}, 60000);
+=======
 const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
 const path = require('node:path');
 const fs = require('node:fs');
