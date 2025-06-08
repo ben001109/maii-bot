@@ -141,6 +141,10 @@ The API service will be available at `http://localhost:3000`.
 
 ```
 .
+├── .github
+│   └── workflows
+│       └── ci.yml
+├── Dockerfile
 ├── api
 │   └── index.js
 ├── bot
@@ -159,6 +163,10 @@ The API service will be available at `http://localhost:3000`.
 
 ```
 maii-bot/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── Dockerfile
 ├── api
 │   └── index.js
 ├── bot
