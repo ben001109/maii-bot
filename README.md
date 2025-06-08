@@ -14,6 +14,11 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 .
 ├── eslint.config.mjs
 ├── .prettierrc
+├── commandHandler.js
+├── bot
+│   ├── index.js
+│   └── commands
+│       └── ping.js
 ├── index.js
 ├── package.json
 ├── test.js
@@ -27,6 +32,11 @@ This is a minimal Node.js project with ESLint and Prettier configured.
 maii-bot/
 ├── eslint.config.mjs
 ├── .prettierrc
+├── commandHandler.js
+├── bot
+│   ├── index.js
+│   └── commands
+│       └── ping.js
 ├── index.js
 ├── package.json
 ├── test.js
