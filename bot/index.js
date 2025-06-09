@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'url';
 import { loadLocale } from './utils/i18n.js';
 import config from '../config.js';
+import logger from '../logger.js';
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
@@ -23,6 +24,21 @@ if (
 setInterval(() => {
   console.log('Bot service running');
 }, 60000);
+
+const originalFetch = global.fetch;
+global.fetch = async (...args) => {
+  const response = await originalFetch(...args);
+  try {
+    const url = typeof args[0] === 'string' ? args[0] : args[0]?.url;
+    const method = args[1]?.method || args[0]?.method || 'GET';
+    if (url && /discord(app)?\.com/.test(url)) {
+      logger.info(`Discord API ${method} ${url} -> ${response.status}`);
+    }
+  } catch (err) {
+    logger.error(`Failed to log Discord API response: ${err}`);
+  }
+  return response;
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
