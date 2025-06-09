@@ -5,7 +5,7 @@ services:
     working_dir: /app
     volumes:
       - .:/app
-    command: node api/index.js
+    command: node API/index.js
     ports:
       - '3000:3000'
 
