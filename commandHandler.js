@@ -1,10 +1,13 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { pathToFileURL } from 'url';
+import { EventEmitter } from 'events';
 
-export class CommandHandler {
+export class CommandHandler extends EventEmitter {
   constructor() {
+    super();
     this.commands = new Map();
+    this.slashCommands = [];
   }
 
   async loadCommands(directory) {
@@ -18,9 +21,12 @@ export class CommandHandler {
           ? new URL(file, directory)
           : pathToFileURL(path.join(dirPath, file));
       const commandModule = await import(fileUrl.href);
-      const { name, execute } = commandModule;
+      const { name, execute, slashCommand } = commandModule;
       if (name && typeof execute === 'function') {
         this.commands.set(name, execute);
+      }
+      if (slashCommand) {
+        this.slashCommands.push(slashCommand);
       }
     }
   }
@@ -31,5 +37,16 @@ export class CommandHandler {
       throw new Error(`Command "${name}" not found`);
     }
     return command(...args);
+  }
+
+  async syncCommands(client) {
+    if (!client?.application?.commands?.set) {
+      throw new Error('Invalid Discord client');
+    }
+    const data = await client.application.commands.set(
+      this.slashCommands.map((c) => c.data.toJSON()),
+    );
+    this.emit('synced', data);
+    return data;
   }
 }

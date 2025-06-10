@@ -9,7 +9,8 @@
     "bot": "node bot/index.js",
     "lint": "eslint \"**/*.js\"",
     "format": "prettier --write \"**/*.{js,cjs,json,md}\"",
-    "test": "node test.js"
+    "test": "node test.js",
+    "ci": "npm run lint && npm run format && npm test"
   },
   "engines": {
     "node": ">=20"

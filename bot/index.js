@@ -10,6 +10,10 @@ import logger from '../logger.js';
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
 
+handler.on('synced', () => {
+  logger.info('Slash commands synced');
+});
+
 export async function runCommand(name, ...args) {
   return handler.execute(name, ...args);
 }
@@ -46,6 +50,10 @@ const __dirname = path.dirname(__filename);
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   partials: [Partials.Channel],
+});
+
+client.once('ready', async () => {
+  await handler.syncCommands(client);
 });
 
 client.commands = new Collection();

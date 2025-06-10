@@ -68,7 +68,13 @@ npm run bot
 - `npm run lint` – run ESLint on the project files.
 - `npm run format` – format the files using Prettier.
 - `npm test` – run the simple test script.
+- `npm run ci` – run lint, format, and tests together.
 - `docker compose up` – start the API and bot services.
+
+### Command Sync
+
+Use `handler.syncCommands(client)` to register all slash commands. The handler
+emits a `synced` event once the Discord API update completes.
 
 ## Docker Compose Usage
 
