@@ -1,5 +1,6 @@
 import express from 'express';
 import config from '../config.js';
+import logger from '../logger.js';
 const app = express();
 
 app.get('/', (req, res) => {
@@ -7,5 +8,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(config.apiPort, () => {
-  console.log(`API server running on port ${config.apiPort}`);
+  logger.info(`API server running on port ${config.apiPort}`);
 });

@@ -83,6 +83,8 @@ The API service will be available at `http://localhost:3000`.
 ## Log Files
 
 Logs are stored in `logs/app.log` when the application or tests run.
+All services write messages using the centralized `logger.js` which wraps the
+`winston` library. Avoid using `console.log` in the codebase.
 
 ## License
 
