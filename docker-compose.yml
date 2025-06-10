@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   api:
-    image: node:18
+    image: node:20
     working_dir: /app
     volumes:
       - .:/app
@@ -10,7 +10,7 @@ services:
       - '3000:3000'
 
   bot:
-    image: node:18
+    image: node:20
     working_dir: /app
     volumes:
       - .:/app

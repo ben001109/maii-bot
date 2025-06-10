@@ -85,6 +85,7 @@ docker compose up
 ```
 
 The API service will be available at `http://localhost:3000`.
+The docker-compose file uses Node.js 20 images for the API and bot services.
 
 ## Log Files
 
