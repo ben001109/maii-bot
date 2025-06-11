@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  initialize:
     runs-on: ubuntu-latest
     env:
       DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: 🔍 Debug Secrets 傳入
+      - name: "🔍 Debug Secrets 傳入"
         run: |
           echo "DISCORD_TOKEN=${DISCORD_TOKEN:0:10}********"
 
@@ -40,6 +40,40 @@ jobs:
 
       - name: 執行測試
         run: npm test
+
+      - name: 建立 Docker Image
+        run: docker build -t maii-bot .
+
+  preform_test:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Lint 檢查
+        run: npm run lint
+
+      - name: 格式化檢查
+        run: npm run format
+
+      - name: 執行測試
+        run: npm test
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
       - name: 建立 Docker Image
         run: docker build -t maii-bot .
