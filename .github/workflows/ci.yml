@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: 🔍 Debug Secrets 傳入
+        run: |
+          echo "DISCORD_TOKEN=${DISCORD_TOKEN:0:10}********"
+
       - name: 安裝依賴
         run: npm install
 
