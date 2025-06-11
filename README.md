@@ -34,6 +34,12 @@ Run the Discord bot:
 npm run bot
 ```
 
+Run the Discord bot in CI:
+
+```bash
+npm run bot:ci
+```
+
 ## Project Structure
 
 ```

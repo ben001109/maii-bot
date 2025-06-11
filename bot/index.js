@@ -52,6 +52,11 @@ const client = new Client({
 client.once('ready', async () => {
   logger.info(`Logged in as ${client.user.tag}`);
   await handler.syncCommands(client);
+  if (process.env.CI) {
+    logger.info('CI environment detected, shutting down.');
+    await client.destroy();
+    process.exit(0);
+  }
 });
 
 client.commands = new Collection();
