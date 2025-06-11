@@ -25,9 +25,6 @@ if (
 ) {
   handler.execute('ping').then(console.log).catch(console.error);
 }
-setInterval(() => {
-  console.log('Bot service running');
-}, 60000);
 
 const originalFetch = global.fetch;
 global.fetch = async (...args) => {
@@ -53,6 +50,7 @@ const client = new Client({
 });
 
 client.once('ready', async () => {
+  logger.info(`Logged in as ${client.user.tag}`);
   await handler.syncCommands(client);
 });
 
