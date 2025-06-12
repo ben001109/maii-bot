@@ -12,7 +12,7 @@ jobs:
     env:
       DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
     steps:
-      - uses: actions/checkout;@v4
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v3
         with:
