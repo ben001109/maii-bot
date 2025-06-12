@@ -44,7 +44,10 @@ npm run bot:ci
 
 ```
 .
+├── .github/
+│   └── workflows/
 ├── API/
+├── CHANGELOG.md
 ├── DCACT/
 ├── Dockerfile
 ├── README.md
@@ -53,19 +56,23 @@ npm run bot:ci
 │   ├── commands/
 │   ├── handler/
 │   └── utils/
+├── commandHandler.js
 ├── config.example.json
 ├── config.js
 ├── docker-compose.yml
 ├── eslint.config.mjs
 ├── index.js
 ├── logger.js
+├── logs/
 ├── multiplatform/
 │   ├── Darwin/
 │   ├── android/
 │   ├── iOS/
 │   ├── linux/
 │   └── windows/
+├── package-lock.json
 ├── package.json
+├── test.js
 └── web/
 ```
 
