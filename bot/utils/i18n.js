@@ -1,9 +1,11 @@
 const locales = {
   en: {
     pong: 'Pong!',
+    balance: (amount) => `Balance: ${amount}`,
   },
   zh: {
     pong: '碰！',
+    balance: (amount) => `餘額：${amount}`,
   },
 };
 
