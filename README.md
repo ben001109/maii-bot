@@ -50,6 +50,7 @@ npm run bot:ci
 ├── CHANGELOG.md
 ├── DCACT/
 ├── Dockerfile
+├── k8s/
 ├── economy/
 │   ├── account.js
 │   └── currency.js
