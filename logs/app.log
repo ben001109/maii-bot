@@ -1,3 +1,9 @@
 info: add called with 1 and 2, returning 3 {"timestamp":"2025-06-09T00:16:58.986Z"}
 info: add called with 1 and 2, returning 3 {"timestamp":"2025-06-09T00:16:59.045Z"}
 info: All tests passed! {"timestamp":"2025-06-09T00:16:59.045Z"}
+info: API server running on port 3000 {"timestamp":"2025-06-11T11:27:19.596Z"}
+info: API server running on port 3000 {"timestamp":"2025-06-11T11:28:31.651Z"}
+info: add called with 1 and 2, returning 3 {"timestamp":"2025-06-11T11:28:31.703Z"}
+info: All tests passed! {"timestamp":"2025-06-11T11:28:31.762Z"}
+info: Logged in as 麥宇宙#0539 {"timestamp":"2025-06-11T11:28:32.763Z"}
+info: Slash commands synced {"timestamp":"2025-06-11T11:28:33.303Z"}
