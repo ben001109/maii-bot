@@ -14,10 +14,6 @@ export function getBalance(id) {
   accounts.set(id, value);
   cache.set(id, value);
   return value;
-const accounts = new Map();
-
-export function getBalance(id) {
-  return accounts.get(id) ?? 0;
 }
 
 export function deposit(id, amount) {
@@ -27,8 +23,6 @@ export function deposit(id, amount) {
   cache.set(id, newBalance);
   db.updatePlayer(id, newBalance);
   return newBalance;
-  accounts.set(id, getBalance(id) + amount);
-  return getBalance(id);
 }
 
 export function withdraw(id, amount) {
@@ -50,8 +44,6 @@ export function initAccount(id) {
     cache.set(id, 0);
   }
   return created;
-  accounts.set(id, balance - amount);
-  return getBalance(id);
 }
 
 export function reset(id) {
@@ -63,7 +55,5 @@ export function reset(id) {
     accounts.clear();
     cache.reset();
     db.reset();
-  } else {
-    accounts.clear();
   }
 }
