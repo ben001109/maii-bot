@@ -53,6 +53,9 @@ npm run bot:ci
 ├── economy/
 │   ├── account.js
 │   └── currency.js
+├── storage/
+│   ├── postgres.js
+│   └── redis.js
 ├── README.md
 ├── TODO.md
 ├── bot/

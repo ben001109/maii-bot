@@ -2,6 +2,13 @@ import assert from 'assert';
 import { add } from './index.js';
 import { CommandHandler } from './commandHandler.js';
 import logger from './logger.js';
+import {
+  deposit,
+  withdraw,
+  getBalance,
+  reset,
+  initAccount,
+} from './economy/account.js';
 import { deposit, withdraw, getBalance, reset } from './economy/account.js';
 import { format } from './economy/currency.js';
 
@@ -24,6 +31,8 @@ assert.strictEqual(synced, true);
 
 // Economy tests
 reset();
+assert.strictEqual(initAccount('test'), true);
+assert.strictEqual(initAccount('test'), false);
 deposit('test', 100);
 assert.strictEqual(getBalance('test'), 100);
 withdraw('test', 40);
