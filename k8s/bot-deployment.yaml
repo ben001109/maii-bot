@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maii-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maii-bot
+  template:
+    metadata:
+      labels:
+        app: maii-bot
+    spec:
+      containers:
+        - name: bot
+          image: node:20
+          command: ['node', 'bot/index.js']
+          workingDir: /app
+          env:
+            - name: DISCORD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: discord-token
+                  key: token
+          volumeMounts:
+            - name: source
+              mountPath: /app
+      volumes:
+        - name: source
+          hostPath:
+            path: /workspace/maii-bot

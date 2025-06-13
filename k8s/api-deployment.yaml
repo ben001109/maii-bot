@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maii-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maii-api
+  template:
+    metadata:
+      labels:
+        app: maii-api
+    spec:
+      containers:
+        - name: api
+          image: node:20
+          command: ['node', 'API/index.js']
+          workingDir: /app
+          volumeMounts:
+            - name: source
+              mountPath: /app
+      volumes:
+        - name: source
+          hostPath:
+            path: /workspace/maii-bot
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: maii-api
+spec:
+  selector:
+    app: maii-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
