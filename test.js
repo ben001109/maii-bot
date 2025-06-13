@@ -9,6 +9,7 @@ import {
   reset,
   initAccount,
 } from './economy/account.js';
+import { deposit, withdraw, getBalance, reset } from './economy/account.js';
 import { format } from './economy/currency.js';
 
 assert.strictEqual(add(1, 2), 3);
