@@ -58,11 +58,14 @@ npm run bot:ci
 ├── TODO.md
 ├── bot/
 │   ├── commands/
-│   │   └── ecom/
+│   │   ├── ecom/
+│   │   ├── kanban.js
+│   │   └── ping.js
 │   ├── handler/
-│   │   └── commandHandler.js
+│   │   ├── commandHandler.js
 │   │   └── ecom/
 │   └── utils/
+│       └── i18n.js
 ├── config.example.json
 ├── config.js
 ├── docker-compose.yml
