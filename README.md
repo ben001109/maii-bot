@@ -64,6 +64,10 @@ npm run bot:ci
 │   ├── handler/
 │   │   ├── commandHandler.js
 │   │   └── ecom/
+│   ├── lang/
+│   │   ├── en.json
+│   │   ├── ja.json
+│   │   └── zh.json
 │   └── utils/
 │       └── i18n.js
 ├── config.example.json

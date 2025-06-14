@@ -1,19 +1,24 @@
-const locales = {
-  en: {
-    pong: 'Pong!',
-    balance: (amount) => `Balance: ${amount}`,
-    init_success: 'Player created',
-    init_exists: 'Player already exists',
-  },
-  zh: {
-    pong: '碰！',
-    balance: (amount) => `餘額：${amount}`,
-    init_success: '玩家已建立',
-    init_exists: '玩家已存在',
-  },
-};
+import fs from 'node:fs';
+
+const langDir = new URL('../lang/', import.meta.url);
+const cache = {};
 
 export function loadLocale(locale) {
-  const lang = locale?.startsWith('zh') ? 'zh' : 'en';
-  return (key) => locales[lang][key] || key;
+  const lang = locale?.startsWith('zh')
+    ? 'zh'
+    : locale?.startsWith('ja')
+      ? 'ja'
+      : 'en';
+  if (!cache[lang]) {
+    const file = new URL(`${lang}.json`, langDir);
+    try {
+      cache[lang] = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch {
+      cache[lang] = {};
+    }
+  }
+  return (key, vars = {}) => {
+    const template = cache[lang][key] || key;
+    return template.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? `{${k}}`);
+  };
 }

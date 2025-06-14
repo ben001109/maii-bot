@@ -1,0 +1,6 @@
+{
+  "pong": "ポン！",
+  "balance": "残高：{amount}",
+  "init_success": "プレイヤーが作成されました",
+  "init_exists": "プレイヤーは既に存在します"
+}
