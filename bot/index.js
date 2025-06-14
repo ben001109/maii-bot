@@ -1,4 +1,4 @@
-import { CommandHandler } from '../commandHandler.js';
+import { CommandHandler } from './handler/commandHandler.js';
 import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
 import path from 'node:path';
 import fs from 'node:fs';

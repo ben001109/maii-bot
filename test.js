@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { add } from './index.js';
-import { CommandHandler } from './commandHandler.js';
+import { CommandHandler } from './bot/handler/commandHandler.js';
 import logger from './logger.js';
 import {
   deposit,

@@ -60,9 +60,9 @@ npm run bot:ci
 │   ├── commands/
 │   │   └── ecom/
 │   ├── handler/
+│   │   └── commandHandler.js
 │   │   └── ecom/
 │   └── utils/
-├── commandHandler.js
 ├── config.example.json
 ├── config.js
 ├── docker-compose.yml
