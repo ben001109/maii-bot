@@ -8,35 +8,85 @@ import {
   getBalance,
   reset,
   initAccount,
-} from './economy/account.js';
-import { format } from './economy/currency.js';
+} from './bot/handler/ecom/account.js';
+import { format } from './bot/handler/ecom/currency.js';
+import { addCard } from './src/kanban/index.js';
 
-assert.strictEqual(add(1, 2), 3);
+function test(name, fn) {
+  try {
+    const result = fn();
+    if (result instanceof Promise) {
+      result
+        .then(() => console.log(`✓ ${name}`))
+        .catch((err) => {
+          console.error(`✕ ${name}`);
+          console.error(err);
+          process.exitCode = 1;
+        });
+    } else {
+      console.log(`✓ ${name}`);
+    }
+  } catch (err) {
+    console.error(`✕ ${name}`);
+    console.error(err);
+    process.exitCode = 1;
+  }
+}
+
+function expect(actual) {
+  return {
+    toBe(expected) {
+      assert.strictEqual(actual, expected);
+    },
+    toEqual(expected) {
+      assert.deepStrictEqual(actual, expected);
+    },
+  };
+}
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./bot/commands/', import.meta.url));
-const result = await handler.execute('ping');
-assert.strictEqual(result, 'pong');
+await handler.loadCommands(new URL('./bot/commands/ecom/', import.meta.url));
 
-let synced = false;
-handler.on('synced', () => {
-  synced = true;
+test('add function', () => {
+  expect(add(1, 2)).toBe(3);
 });
 
-await handler.syncCommands({
-  application: { commands: { set: async () => [] } },
+test('ping command', async () => {
+  const result = await handler.execute('ping');
+  expect(result).toBe('pong');
 });
-assert.strictEqual(synced, true);
 
-// Economy tests
-reset();
-assert.strictEqual(initAccount('test'), true);
-assert.strictEqual(initAccount('test'), false);
-deposit('test', 100);
-assert.strictEqual(getBalance('test'), 100);
-withdraw('test', 40);
-assert.strictEqual(getBalance('test'), 60);
-assert.throws(() => withdraw('test', 100));
-assert.strictEqual(format(60), 'NT$60');
+test('sync commands event', async () => {
+  let synced = false;
+  handler.on('synced', () => {
+    synced = true;
+  });
+  await handler.syncCommands({
+    application: { commands: { set: async () => [] } },
+  });
+  expect(synced).toBe(true);
+});
+
+test('economy functions', () => {
+  reset();
+  expect(initAccount('test')).toBe(true);
+  expect(initAccount('test')).toBe(false);
+  deposit('test', 100);
+  expect(getBalance('test')).toBe(100);
+  withdraw('test', 40);
+  expect(getBalance('test')).toBe(60);
+  assert.throws(() => withdraw('test', 100));
+  expect(format(60)).toBe('NT$60');
+});
+
+test('kanban add', () => {
+  expect(addCard('123', 'test')).toEqual({ text: '123', assign: 'test' });
+});
+
+test('kanban command', async () => {
+  const result = await handler.execute('kanbanadd', '123', 'test');
+  expect(result).toEqual({ text: '123', assign: 'test' });
+});
 
 logger.info('All tests passed!');
