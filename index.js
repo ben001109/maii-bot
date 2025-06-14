@@ -1,6 +1,9 @@
 import logger from './logger.js';
-import './API/index.js';
-import './bot/index.js';
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await import('./API/index.js');
+  await import('./bot/index.js');
+}
 
 export function add(a, b) {
   const result = a + b;
