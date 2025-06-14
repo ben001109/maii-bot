@@ -80,6 +80,14 @@ test('economy functions', () => {
   expect(format(60)).toBe('NT$60');
 });
 
+test('withdraw negative amount', () => {
+  reset();
+  initAccount('neg');
+  deposit('neg', 50);
+  assert.throws(() => withdraw('neg', -10));
+  expect(getBalance('neg')).toBe(50);
+});
+
 test('kanban add', () => {
   expect(addCard('123', 'test')).toEqual({ text: '123', assign: 'test' });
 });

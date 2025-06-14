@@ -26,6 +26,9 @@ export function deposit(id, amount) {
 }
 
 export function withdraw(id, amount) {
+  if (amount <= 0) {
+    throw new Error('Invalid amount');
+  }
   const balance = getBalance(id);
   if (amount > balance) {
     throw new Error('Insufficient funds');
