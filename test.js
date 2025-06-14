@@ -2,6 +2,7 @@ import assert from 'assert';
 import { add } from './index.js';
 import { CommandHandler } from './bot/handler/commandHandler.js';
 import logger from './logger.js';
+import { loadLocale } from './bot/utils/i18n.js';
 import {
   deposit,
   withdraw,
@@ -95,6 +96,13 @@ test('kanban add', () => {
 test('kanban command', async () => {
   const result = await handler.execute('kanbanadd', '123', 'test');
   expect(result).toEqual({ text: '123', assign: 'test' });
+});
+
+test('locale error_execute', () => {
+  const en = loadLocale('en');
+  const zh = loadLocale('zh-TW');
+  expect(en('error_execute')).toBe('Error executing command');
+  expect(zh('error_execute')).toBe('執行指令時發生錯誤');
 });
 
 logger.info('All tests passed!');
