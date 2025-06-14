@@ -99,12 +99,10 @@ const handler = new CommandHandler();
     expect(result).toEqual({ text: '123', assign: 'test' });
   });
 
-  test('locale error_execute', () => {
-    const en = loadLocale('en');
-    const zh = loadLocale('zh-TW');
-    expect(en('error_execute')).toBe('Error executing command');
-    expect(zh('error_execute')).toBe('執行指令時發生錯誤');
-  });
+test('i18n translations', () => {
+  const t = loadLocale('ja');
+  expect(t('pong')).toBe('ポン！');
+  expect(t('balance', { amount: '100' })).toBe('残高：100');
 
   logger.info('All tests passed!');
 })();

@@ -1,0 +1,6 @@
+{
+  "pong": "碰！",
+  "balance": "餘額：{amount}",
+  "init_success": "玩家已建立",
+  "init_exists": "玩家已存在"
+}
