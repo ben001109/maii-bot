@@ -24,7 +24,7 @@ if (
   import.meta.url === process.argv[1] ||
   import.meta.url === `file://${process.argv[1]}`
 ) {
-  handler.execute('ping').then(console.log).catch(console.error);
+  handler.execute('ping').then(logger.info).catch(logger.error);
 }
 
 const originalFetch = global.fetch;
@@ -79,7 +79,7 @@ client.on('interactionCreate', async (interaction) => {
   try {
     await command.execute(interaction, locale);
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     await interaction.reply({
       content: 'Error executing command',
       ephemeral: true,
@@ -88,7 +88,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 if (!config.discordToken) {
-  console.error('Discord token not provided in config or ENV');
+  logger.error('Discord token not provided in config or ENV');
   process.exit(1);
 }
 client.login(config.discordToken);

@@ -17,18 +17,18 @@ function test(name, fn) {
     const result = fn();
     if (result instanceof Promise) {
       result
-        .then(() => console.log(`✓ ${name}`))
+        .then(() => logger.info(`✓ ${name}`))
         .catch((err) => {
-          console.error(`✕ ${name}`);
-          console.error(err);
+          logger.error(`✕ ${name}`);
+          logger.error(err);
           process.exitCode = 1;
         });
     } else {
-      console.log(`✓ ${name}`);
+      logger.info(`✓ ${name}`);
     }
   } catch (err) {
-    console.error(`✕ ${name}`);
-    console.error(err);
+    logger.error(`✕ ${name}`);
+    logger.error(err);
     process.exitCode = 1;
   }
 }
