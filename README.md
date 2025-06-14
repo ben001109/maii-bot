@@ -76,6 +76,8 @@ npm run bot:ci
 │   ├── iOS/
 │   ├── linux/
 │   └── windows/
+├── src/
+│   └── kanban/
 ├── package-lock.json
 ├── package.json
 ├── test.js
