@@ -98,6 +98,10 @@ test('kanban command', async () => {
   expect(result).toEqual({ text: '123', assign: 'test' });
 });
 
+test('i18n translations', () => {
+  const t = loadLocale('ja');
+  expect(t('pong')).toBe('ポン！');
+  expect(t('balance', { amount: '100' })).toBe('残高：100');
 test('locale error_execute', () => {
   const en = loadLocale('en');
   const zh = loadLocale('zh-TW');
