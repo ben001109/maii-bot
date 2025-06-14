@@ -81,7 +81,7 @@ client.on('interactionCreate', async (interaction) => {
   } catch (err) {
     logger.error(err);
     await interaction.reply({
-      content: 'Error executing command',
+      content: locale('error_execute'),
       ephemeral: true,
     });
   }
