@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { getBalance } from '../../economy/account.js';
-import { format } from '../../economy/currency.js';
+import { getBalance } from '../../handler/ecom/account.js';
+import { format } from '../../handler/ecom/currency.js';
 
 export const name = 'balance';
 

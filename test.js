@@ -8,13 +8,14 @@ import {
   getBalance,
   reset,
   initAccount,
-} from './economy/account.js';
-import { format } from './economy/currency.js';
+} from './bot/handler/ecom/account.js';
+import { format } from './bot/handler/ecom/currency.js';
 
 assert.strictEqual(add(1, 2), 3);
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./bot/commands/', import.meta.url));
+await handler.loadCommands(new URL('./bot/commands/ecom/', import.meta.url));
 const result = await handler.execute('ping');
 assert.strictEqual(result, 'pong');
 
