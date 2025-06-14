@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { initAccount } from '../../economy/account.js';
+import { initAccount } from '../../handler/ecom/account.js';
 
 export const name = 'init';
 

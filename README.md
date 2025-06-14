@@ -51,9 +51,6 @@ npm run bot:ci
 ├── DCACT/
 ├── Dockerfile
 ├── k8s/
-├── economy/
-│   ├── account.js
-│   └── currency.js
 ├── storage/
 │   ├── postgres.js
 │   └── redis.js
@@ -61,7 +58,9 @@ npm run bot:ci
 ├── TODO.md
 ├── bot/
 │   ├── commands/
+│   │   └── ecom/
 │   ├── handler/
+│   │   └── ecom/
 │   └── utils/
 ├── commandHandler.js
 ├── config.example.json
