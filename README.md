@@ -62,8 +62,8 @@ npm run bot:ci
 ├── bot/
 │   ├── commands/
 │   ├── handler/
+│   │   └── commandHandler.js
 │   └── utils/
-├── commandHandler.js
 ├── config.example.json
 ├── config.js
 ├── docker-compose.yml
