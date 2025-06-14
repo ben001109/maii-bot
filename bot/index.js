@@ -9,7 +9,6 @@ import logger from '../logger.js';
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
-await handler.loadCommands(new URL('./commands/ecom/', import.meta.url));
 
 handler.on('synced', () => {
   logger.info('Slash commands synced');

@@ -47,7 +47,6 @@ function expect(actual) {
 
 const handler = new CommandHandler();
 await handler.loadCommands(new URL('./bot/commands/', import.meta.url));
-await handler.loadCommands(new URL('./bot/commands/ecom/', import.meta.url));
 
 test('add function', () => {
   expect(add(1, 2)).toBe(3);
