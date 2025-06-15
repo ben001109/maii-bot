@@ -59,11 +59,15 @@ npm run bot:ci
 ├── bot/
 │   ├── commands/
 │   │   ├── ecom/
+│   │   │   ├── balance.js
+│   │   │   └── initplayer.js
 │   │   ├── kanban.js
 │   │   └── ping.js
 │   ├── handler/
 │   │   ├── commandHandler.js
 │   │   └── ecom/
+│   │       ├── account.js
+│   │       └── currency.js
 │   ├── lang/
 │   │   ├── en.json
 │   │   ├── ja.json
