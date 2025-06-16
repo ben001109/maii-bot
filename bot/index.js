@@ -1,10 +1,10 @@
-import { CommandHandler } from './handler/commandHandler.js';
+import { SlashHandler } from './handler/slashHandler.js';
 import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
 import { loadLocale } from './utils/i18n.js';
 import config from '../config.js';
 import logger from '../logger.js';
 
-const handler = new CommandHandler();
+const handler = new SlashHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
 
 handler.on('synced', () => {

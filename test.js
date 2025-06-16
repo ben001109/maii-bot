@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { add } from './index.js';
-import { CommandHandler } from './bot/handler/commandHandler.js';
+import { SlashHandler } from './bot/handler/slashHandler.js';
 import logger from './logger.js';
 import { loadLocale } from './bot/utils/i18n.js';
 import {
@@ -45,7 +45,7 @@ function expect(actual) {
   };
 }
 
-const handler = new CommandHandler();
+const handler = new SlashHandler();
 
 (async () => {
   await handler.loadCommands(new URL('./bot/commands/', import.meta.url));

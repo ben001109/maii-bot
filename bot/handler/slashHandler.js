@@ -3,7 +3,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { EventEmitter } from 'events';
 
-export class CommandHandler extends EventEmitter {
+export class SlashHandler extends EventEmitter {
   constructor() {
     super();
     this.commands = new Map();

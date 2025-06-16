@@ -64,7 +64,7 @@ npm run bot:ci
 │   │   ├── kanban.js
 │   │   └── ping.js
 │   ├── handler/
-│   │   ├── commandHandler.js
+│   │   ├── slashHandler.js
 │   │   └── ecom/
 │   │       ├── account.js
 │   │       └── currency.js
