@@ -77,6 +77,14 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+if (process.env.CI) {
+  logger.info('CI environment detected, skipping Discord login.');
+  await handler.syncCommands({
+    application: { commands: { set: async () => [] } },
+  });
+  process.exit(0);
+}
+
 if (!config.discordToken) {
   logger.error('Discord token not provided in config or ENV');
   process.exit(1);

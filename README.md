@@ -34,11 +34,14 @@ Run the Discord bot:
 npm run bot
 ```
 
-Run the Discord bot in CI:
+Run the Discord bot in CI (offline mode):
 
 ```bash
 npm run bot:ci
 ```
+
+The CI script skips Discord login and only verifies that commands load and sync
+locally.
 
 ## Project Structure
 
