@@ -87,7 +87,9 @@ async function networkAvailable(token) {
       signal: controller.signal,
     });
     clearTimeout(timeout);
-    return res.ok;
+    if (!res.ok) return false;
+    const data = await res.text();
+    return Boolean(data);
   } catch {
     return false;
   }
