@@ -72,6 +72,10 @@ and sync locally.
 │   │   └── ecom/
 │   │       ├── account.js
 │   │       └── currency.js
+│   ├── lang/
+│   │   ├── en.json
+│   │   ├── ja.json
+│   │   └── zh.json
 │   └── utils/
 │       └── i18n.js
 ├── config.example.json

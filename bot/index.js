@@ -95,6 +95,17 @@ async function networkAvailable(token) {
   }
 }
 
+if (process.env.CI) {
+  if (!(await networkAvailable())) {
+    logger.info('Network unreachable, running in offline mode.');
+    await handler.syncCommands({
+      application: { commands: { set: async () => [] } },
+    });
+    process.exit(0);
+  }
+  logger.info('Network detected, proceeding with Discord login.');
+}
+
 if (!config.discordToken) {
   logger.error('Discord token not provided in config or ENV');
   process.exit(1);

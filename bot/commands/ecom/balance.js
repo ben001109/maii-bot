@@ -14,11 +14,6 @@ export const slashCommand = {
     .setDescription('Check your account balance'),
   async execute(interaction, locale) {
     const balance = getBalance(interaction.user.id);
-    const text = locale('balance');
-    const message =
-      typeof text === 'function'
-        ? text(format(balance))
-        : `${text} ${format(balance)}`;
-    await interaction.reply(message);
+    await interaction.reply(locale('balance', { amount: format(balance) }));
   },
 };
