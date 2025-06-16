@@ -77,12 +77,30 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+async function networkAvailable() {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch('https://discord.com/api/v10', {
+      method: 'HEAD',
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 if (process.env.CI) {
-  logger.info('CI environment detected, skipping Discord login.');
-  await handler.syncCommands({
-    application: { commands: { set: async () => [] } },
-  });
-  process.exit(0);
+  if (!(await networkAvailable())) {
+    logger.info('Network unreachable, running in offline mode.');
+    await handler.syncCommands({
+      application: { commands: { set: async () => [] } },
+    });
+    process.exit(0);
+  }
+  logger.info('Network detected, proceeding with Discord login.');
 }
 
 if (!config.discordToken) {

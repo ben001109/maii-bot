@@ -40,8 +40,8 @@ Run the Discord bot in CI (offline mode):
 npm run bot:ci
 ```
 
-The CI script skips Discord login and only verifies that commands load and sync
-locally.
+The CI script checks if Discord is reachable. If not, it skips login and only
+verifies that commands load and sync locally.
 
 ## Project Structure
 
