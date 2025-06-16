@@ -34,11 +34,14 @@ Run the Discord bot:
 npm run bot
 ```
 
-Run the Discord bot in CI:
+Run the Discord bot in CI (offline mode):
 
 ```bash
 npm run bot:ci
 ```
+
+The CI script checks if Discord is reachable. If not, it skips login and only
+verifies that commands load and sync locally.
 
 ## Project Structure
 
@@ -59,11 +62,15 @@ npm run bot:ci
 ├── bot/
 │   ├── commands/
 │   │   ├── ecom/
+│   │   │   ├── balance.js
+│   │   │   └── initplayer.js
 │   │   ├── kanban.js
 │   │   └── ping.js
 │   ├── handler/
-│   │   ├── commandHandler.js
+│   │   ├── slashHandler.js
 │   │   └── ecom/
+│   │       ├── account.js
+│   │       └── currency.js
 │   ├── lang/
 │   │   ├── en.json
 │   │   ├── ja.json
