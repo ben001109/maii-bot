@@ -1,15 +1,11 @@
-import { CommandHandler } from './handler/commandHandler.js';
+import { SlashHandler } from './handler/slashHandler.js';
 import { Client, GatewayIntentBits, Partials, Collection } from 'discord.js';
-import path from 'node:path';
-import fs from 'node:fs';
-import { fileURLToPath } from 'url';
 import { loadLocale } from './utils/i18n.js';
 import config from '../config.js';
 import logger from '../logger.js';
 
-const handler = new CommandHandler();
+const handler = new SlashHandler();
 await handler.loadCommands(new URL('./commands/', import.meta.url));
-await handler.loadCommands(new URL('./commands/ecom/', import.meta.url));
 
 handler.on('synced', () => {
   logger.info('Slash commands synced');
@@ -42,9 +38,6 @@ global.fetch = async (...args) => {
   return response;
 };
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
   partials: [Partials.Channel],
@@ -62,12 +55,9 @@ client.once('ready', async () => {
 
 client.commands = new Collection();
 
-const commandsPath = path.join(__dirname, 'commands');
-for (const file of fs.readdirSync(commandsPath)) {
-  const command = await import(path.join(commandsPath, file));
-  const cmd = command.slashCommand || command.default || command;
-  if (cmd?.data?.name) {
-    client.commands.set(cmd.data.name, cmd);
+for (const slash of handler.slashCommands) {
+  if (slash?.data?.name) {
+    client.commands.set(slash.data.name, slash);
   }
 }
 
@@ -87,8 +77,37 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+async function networkAvailable(token) {
+  if (!token) return false;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch('https://discord.com/api/v10/users/@me', {
+      headers: { Authorization: `Bot ${token}` },
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) return false;
+    const data = await res.text();
+    return Boolean(data);
+  } catch {
+    return false;
+  }
+}
+
 if (!config.discordToken) {
   logger.error('Discord token not provided in config or ENV');
   process.exit(1);
+}
+
+if (process.env.CI) {
+  if (!(await networkAvailable(config.discordToken))) {
+    logger.info('Network unreachable, running in offline mode.');
+    await handler.syncCommands({
+      application: { commands: { set: async () => [] } },
+    });
+    process.exit(0);
+  }
+  logger.info('Network detected, proceeding with Discord login.');
 }
 client.login(config.discordToken);
