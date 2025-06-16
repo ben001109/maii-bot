@@ -77,12 +77,13 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-async function networkAvailable() {
+async function networkAvailable(token) {
+  if (!token) return false;
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch('https://discord.com/api/v10', {
-      method: 'HEAD',
+    const res = await fetch('https://discord.com/api/v10/users/@me', {
+      headers: { Authorization: `Bot ${token}` },
       signal: controller.signal,
     });
     clearTimeout(timeout);
@@ -92,8 +93,13 @@ async function networkAvailable() {
   }
 }
 
+if (!config.discordToken) {
+  logger.error('Discord token not provided in config or ENV');
+  process.exit(1);
+}
+
 if (process.env.CI) {
-  if (!(await networkAvailable())) {
+  if (!(await networkAvailable(config.discordToken))) {
     logger.info('Network unreachable, running in offline mode.');
     await handler.syncCommands({
       application: { commands: { set: async () => [] } },
@@ -101,10 +107,5 @@ if (process.env.CI) {
     process.exit(0);
   }
   logger.info('Network detected, proceeding with Discord login.');
-}
-
-if (!config.discordToken) {
-  logger.error('Discord token not provided in config or ENV');
-  process.exit(1);
 }
 client.login(config.discordToken);
