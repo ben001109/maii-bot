@@ -71,6 +71,10 @@ it skips login and only verifies that commands load and sync locally.
 │   │   └── ecom/
 │   │       ├── account.js
 │   │       └── currency.js
+│   ├── lang/
+│   │   ├── en.json
+│   │   ├── ja.json
+│   │   └── zh.json
 │   └── utils/
 │       └── i18n.js
 ├── config.example.json
