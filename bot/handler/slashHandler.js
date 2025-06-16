@@ -3,7 +3,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { EventEmitter } from 'events';
 
-export class CommandHandler extends EventEmitter {
+export class SlashHandler extends EventEmitter {
   constructor() {
     super();
     this.commands = new Map();
@@ -13,13 +13,21 @@ export class CommandHandler extends EventEmitter {
   async loadCommands(directory) {
     const dirPath =
       directory instanceof URL ? directory : path.resolve(directory);
-    const files = await fs.readdir(dirPath);
-    for (const file of files) {
-      if (!file.endsWith('.js')) continue;
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const subDir =
+          directory instanceof URL
+            ? new URL(`${entry.name}/`, directory)
+            : path.join(dirPath, entry.name);
+        await this.loadCommands(subDir);
+        continue;
+      }
+      if (!entry.name.endsWith('.js')) continue;
       const fileUrl =
         directory instanceof URL
-          ? new URL(file, directory)
-          : pathToFileURL(path.join(dirPath, file));
+          ? new URL(entry.name, directory)
+          : pathToFileURL(path.join(dirPath, entry.name));
       const commandModule = await import(fileUrl.href);
       const { name, execute, slashCommand } = commandModule;
       if (name && typeof execute === 'function') {
