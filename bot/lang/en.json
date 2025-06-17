@@ -1,0 +1,6 @@
+{
+  "pong": "Pong!",
+  "balance": "Balance: {amount}",
+  "init_success": "Player created",
+  "init_exists": "Player already exists"
+}
