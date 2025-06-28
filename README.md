@@ -13,7 +13,49 @@ This project simulates Taiwan's economy in a restaurant management game. It is b
 
 ## Requirements
 
-- Node.js 20 or later
+- [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm) for managing Node.js versions
+- Node.js 20 or later (managed via nvm)
+
+## Installation
+
+### 1. Install nvm (Node Version Manager)
+
+**macOS/Linux:**
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+```
+
+Restart your terminal or run:
+```bash
+source ~/.bashrc  # or ~/.zshrc for zsh users
+```
+
+**Windows:**
+Download and install [nvm-windows](https://github.com/coreybutler/nvm-windows/releases)
+
+### 2. Install and use Node.js 20
+
+```bash
+# Navigate to the project directory
+cd ~/work/maii-bot
+
+# Install Node.js 20
+nvm install 20
+
+# Use Node.js 20 for this project (or simply run 'nvm use' to use the version in .nvmrc)
+nvm use 20
+
+# Set Node.js 20 as default (optional)
+nvm alias default 20
+```
+
+**Note:** This project includes a `.nvmrc` file that specifies Node.js version 20. When you're in the project directory, you can simply run `nvm use` to automatically switch to the correct Node.js version.
+
+### 3. Install project dependencies
+
+```bash
+npm install
+```
 
 ## Configuration
 
