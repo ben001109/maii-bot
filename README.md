@@ -21,11 +21,13 @@ This project simulates Taiwan's economy in a restaurant management game. It is b
 ### 1. Install nvm (Node Version Manager)
 
 **macOS/Linux:**
+
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 ```
 
 Restart your terminal or run:
+
 ```bash
 source ~/.bashrc  # or ~/.zshrc for zsh users
 ```
@@ -93,6 +95,8 @@ and sync locally.
 ├── .github/
 │   └── workflows/
 ├── API/
+│   ├── Dockerfile
+│   └── index.js
 ├── CHANGELOG.md
 ├── DCACT/
 ├── Dockerfile
@@ -118,8 +122,9 @@ and sync locally.
 │   │   ├── en.json
 │   │   ├── ja.json
 │   │   └── zh.json
-│   └── utils/
+│   ├── utils/
 │       └── i18n.js
+│   └── Dockerfile
 ├── config.example.json
 ├── config.js
 ├── docker-compose.yml
@@ -147,7 +152,7 @@ and sync locally.
 - `npm run format` – format the files using Prettier.
 - `npm test` – run the simple test script.
 - `npm run ci` – run lint, format, and tests together.
-- `docker compose up` – start the API and bot services.
+- `docker compose up` – start the API, bot, Postgres and Redis services.
 
 ### Command Sync
 
@@ -163,7 +168,7 @@ docker compose up
 ```
 
 The API service will be available at `http://localhost:3000`.
-The docker-compose file uses Node.js 20 images for the API and bot services.
+The docker-compose file builds the API and bot images from their respective Dockerfiles and also launches Postgres and Redis containers.
 
 ## Log Files
 
