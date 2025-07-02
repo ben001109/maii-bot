@@ -1,17 +1,15 @@
 version: '3.8'
 services:
   api:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: node API/index.js
+    build:
+      context: .
+      dockerfile: API/Dockerfile
     ports:
       - '3000:3000'
 
   bot:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: node bot/index.js
+    build:
+      context: .
+      dockerfile: bot/Dockerfile
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
