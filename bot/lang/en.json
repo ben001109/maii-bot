@@ -1,7 +1,19 @@
 {
   "pong": "Pong!",
-  "balance": "Balance: {amount}",
+  "balance": "Your balance: {amount}",
   "init_success": "Player created",
   "init_exists": "Player already exists",
-  "error_execute": "Error executing command"
+  "error_execute": "Error executing command",
+  "error_general": "An error occurred, please try again later",
+  "error_validation": "Validation error: {message}",
+  "error_insufficient_funds": "Insufficient funds. Required: {requested}, Available: {available}",
+  "error_not_found": "{resource} not found",
+  "balance_check_success": "Balance check completed",
+  "player_not_found": "Player not found",
+  "player_created": "Player account created successfully",
+  "player_already_exists": "Player account already exists",
+  "deposit_success": "Deposit successful! New balance: {amount}",
+  "withdraw_success": "Withdrawal successful! New balance: {amount}",
+  "transfer_success": "Transfer successful! Sent {amount} to {recipient}",
+  "welcome_new_player": "Welcome to the restaurant management game! Your starting balance is {amount}."
 }
