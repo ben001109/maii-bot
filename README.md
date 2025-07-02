@@ -152,7 +152,7 @@ and sync locally.
 - `npm run format` – format the files using Prettier.
 - `npm test` – run the simple test script.
 - `npm run ci` – run lint, format, and tests together.
-- `docker compose up` – start the API and bot services.
+- `docker compose up` – start the API, bot, Postgres and Redis services.
 
 ### Command Sync
 
@@ -168,7 +168,7 @@ docker compose up
 ```
 
 The API service will be available at `http://localhost:3000`.
-The docker-compose file builds the API and bot images from their respective Dockerfiles.
+The docker-compose file builds the API and bot images from their respective Dockerfiles and also launches Postgres and Redis containers.
 
 ## Log Files
 

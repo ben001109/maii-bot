@@ -4,12 +4,38 @@ services:
     build:
       context: .
       dockerfile: API/Dockerfile
+    volumes:
+      - .:/app
+    command: node API/index.js
     ports:
       - '3000:3000'
+    depends_on:
+      - postgres
+      - redis
 
   bot:
     build:
       context: .
       dockerfile: bot/Dockerfile
+    volumes:
+      - .:/app
+    command: node bot/index.js
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
